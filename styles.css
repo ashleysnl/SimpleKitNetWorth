@@ -591,19 +591,25 @@ textarea {
 }
 
 #dashboardDayDetail .day-detail-head {
-  padding-right: 74px;
+  position: sticky;
+  top: -1px;
+  z-index: 5;
+  background: #fbfdff;
+  padding: 10px 74px 8px 0;
+  margin: -2px 0 6px;
+  border-bottom: 1px solid #edf2fb;
 }
 
 #dashboardDayDetailClose {
-  position: sticky;
-  top: 10px;
-  right: auto;
-  z-index: 4;
+  position: absolute;
+  top: 8px;
+  right: 0;
+  z-index: 6;
   border-radius: 999px;
   padding: 8px 12px;
   box-shadow: 0 8px 16px rgba(10, 20, 35, 0.12);
-  margin-left: auto;
-  align-self: flex-start;
+  margin-left: 0;
+  align-self: auto;
 }
 
 .import-reminder-card {
@@ -1386,14 +1392,15 @@ td {
   }
 
   #dashboardDayDetail .day-detail-head {
-    padding-right: 74px;
+    top: -1px;
+    padding: 8px 74px 8px 0;
   }
 
   #dashboardDayDetailClose {
-    top: 12px;
-    right: auto;
-    position: sticky;
-    margin-left: auto;
+    top: 10px;
+    right: 0;
+    position: absolute;
+    margin-left: 0;
   }
 
   .report-top {
