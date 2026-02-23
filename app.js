@@ -4,6 +4,10 @@ const BACKUP_VERSION = 1;
 const BASE_CATEGORIES = ["Lodging", "Transportation", "Food", "Activities", "Park Passes", "Shopping", "Misc"];
 const SUPPORT_BANNER_DISMISSED_KEY = "travelplanner_support_banner_dismissed";
 const SUPPORT_BANNER_SHOWN_KEY = "travelplanner_support_banner_shown";
+const FAMILY_ADULTS_KEY = "travelplanner_trip_adults";
+const FAMILY_CHILDREN_KEY = "travelplanner_trip_children";
+const FAMILY_SPLIT_TOGGLE_KEY = "travelplanner_family_split_toggle";
+const ONBOARDING_DISMISSED_KEY = "travelplanner_onboarding_dismissed";
 
 function makeId() {
   if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
@@ -17,128 +21,230 @@ function cloneDeep(value) {
 
 const demoData = {
   settings: {
-    tripName: "Spring Getaway",
-    travelers: 2,
-    startDate: "2026-04-12",
-    endDate: "2026-04-19",
-    totalBudgetCad: 5712,
+    tripName: "Sample Family Theme Park Trip (Demo)",
+    travelers: 4,
+    startDate: "2026-04-27",
+    endDate: "2026-05-07",
+    totalBudgetCad: 8500,
     usdToCadRate: 1.36,
   },
   activities: [
     {
       id: makeId(),
-      date: "2026-04-12",
-      time: "10:30",
-      title: "Outbound Flight",
-      location: "Airport",
+      date: "2026-04-27",
+      time: "07:30",
+      title: "Flight to Orlando",
+      location: "YYZ Airport",
       category: "Transportation",
-      plannedUsd: 740,
-      paidUsd: 740,
+      currency: "CAD",
+      plannedUsd: 964.24,
+      paidUsd: 964.24,
       status: "Paid",
+      notes: "Family seats booked together",
     },
     {
       id: makeId(),
-      date: "2026-04-12",
+      date: "2026-04-27",
       time: "16:00",
       title: "Hotel Check-In",
-      location: "Downtown Hotel",
+      location: "Resort Hotel",
       category: "Lodging",
+      currency: "USD",
       plannedUsd: 1180,
       paidUsd: 400,
       status: "Booked",
+      notes: "Request adjoining rooms if available",
     },
     {
       id: makeId(),
-      date: "2026-04-13",
+      date: "2026-04-28",
       time: "09:00",
-      title: "Museum & City Tour",
-      location: "City Center",
-      category: "Activities",
+      title: "Epic Universe",
+      location: "Orlando",
+      category: "Park Passes",
+      currency: "USD",
       plannedUsd: 520,
       paidUsd: 520,
       status: "Paid",
     },
     {
       id: makeId(),
-      date: "2026-04-14",
-      time: "19:00",
+      date: "2026-04-29",
+      time: "18:30",
       title: "Dinner Reservation",
-      location: "Waterfront District",
+      location: "Disney Springs",
       category: "Food",
+      currency: "USD",
       plannedUsd: 180,
       paidUsd: 0,
       status: "Planned",
     },
     {
       id: makeId(),
-      date: "2026-04-16",
-      time: "08:30",
-      title: "Scenic Day Excursion",
-      location: "Regional Attraction",
+      date: "2026-05-01",
+      time: "08:45",
+      title: "Magic Kingdom",
+      location: "Walt Disney World",
+      category: "Park Passes",
+      currency: "USD",
+      plannedUsd: 620,
+      paidUsd: 0,
+      status: "Booked",
+    },
+    {
+      id: makeId(),
+      date: "2026-05-02",
+      time: "10:30",
+      title: "Pool + Rest Day",
+      location: "Resort",
       category: "Activities",
+      currency: "CAD",
+      plannedUsd: 0,
+      paidUsd: 0,
+      status: "Planned",
+      notes: "No major spending planned",
+    },
+    {
+      id: makeId(),
+      date: "2026-05-03",
+      time: "09:15",
+      title: "Kennedy Space Center",
+      location: "Cape Canaveral",
+      category: "Activities",
+      currency: "USD",
       plannedUsd: 260,
       paidUsd: 0,
       status: "Booked",
     },
     {
       id: makeId(),
-      date: "2026-04-17",
-      time: "12:00",
-      title: "Relaxing Day & Lunch",
-      location: "Beachfront",
-      category: "Food",
-      plannedUsd: 140,
-      paidUsd: 65,
-      status: "Booked",
+      date: "2026-05-04",
+      time: "10:00",
+      title: "LEGOLAND Day Trip",
+      location: "Winter Haven",
+      category: "Activities",
+      currency: "USD",
+      plannedUsd: 310,
+      paidUsd: 0,
+      status: "Planned",
     },
     {
       id: makeId(),
-      date: "2026-04-18",
+      date: "2026-05-06",
       time: "14:00",
       title: "Souvenir Shopping",
-      location: "Market District",
+      location: "Outlet Mall",
       category: "Shopping",
+      currency: "USD",
       plannedUsd: 220,
       paidUsd: 0,
       status: "Planned",
     },
     {
       id: makeId(),
-      date: "2026-04-19",
+      date: "2026-05-07",
       time: "13:15",
       title: "Return Flight Home",
       location: "Airport",
       category: "Transportation",
-      plannedUsd: 660,
-      paidUsd: 660,
+      currency: "CAD",
+      plannedUsd: 882.40,
+      paidUsd: 882.40,
       status: "Paid",
     },
   ],
   costItems: [
     {
       id: makeId(),
-      title: "Travel Insurance",
+      title: "Travel Insurance (Family)",
       category: "Misc",
-      plannedUsd: 155,
-      paidUsd: 155,
+      currency: "CAD",
+      plannedUsd: 210,
+      paidUsd: 210,
       includeInItinerary: false,
+      notes: "Policy numbers stored in email",
     },
     {
       id: makeId(),
       title: "Airport Parking",
       category: "Transportation",
+      currency: "CAD",
       plannedUsd: 95,
+      paidUsd: 95,
+      includeInItinerary: true,
+      itineraryDate: "2026-04-27",
+      itineraryTime: "05:30",
+      itineraryLocation: "Home Airport",
+      itineraryStatus: "Paid",
+    },
+    {
+      id: makeId(),
+      title: "Hertz Car Rental",
+      category: "Transportation",
+      currency: "USD",
+      plannedUsd: 420,
+      paidUsd: 120,
+      includeInItinerary: true,
+      itineraryDate: "2026-04-27",
+      itineraryTime: "11:00",
+      itineraryLocation: "Orlando Airport",
+      itineraryStatus: "Booked",
+    },
+    {
+      id: makeId(),
+      title: "4-Day Park Tickets",
+      category: "Park Passes",
+      currency: "USD",
+      plannedUsd: 1680,
+      paidUsd: 1680,
+      includeInItinerary: false,
+      notes: "Includes one park hopper day",
+    },
+    {
+      id: makeId(),
+      title: "Grocery Run",
+      category: "Food",
+      currency: "USD",
+      plannedUsd: 180,
       paidUsd: 0,
       includeInItinerary: true,
-      itineraryDate: "2026-04-12",
-      itineraryTime: "08:30",
-      itineraryLocation: "Home Airport",
+      itineraryDate: "2026-04-27",
+      itineraryTime: "18:30",
+      itineraryLocation: "Nearby supermarket",
       itineraryStatus: "Planned",
+    },
+    {
+      id: makeId(),
+      title: "PhotoPass / Memory Package",
+      category: "Activities",
+      currency: "USD",
+      plannedUsd: 220,
+      paidUsd: 0,
+      includeInItinerary: false,
+    },
+    {
+      id: makeId(),
+      title: "Souvenir Budget Envelope",
+      category: "Shopping",
+      currency: "CAD",
+      plannedUsd: 300,
+      paidUsd: 0,
+      includeInItinerary: false,
+    },
+    {
+      id: makeId(),
+      title: "Resort Parking + Fees",
+      category: "Lodging",
+      currency: "USD",
+      plannedUsd: 95,
+      paidUsd: 0,
+      includeInItinerary: false,
     },
   ],
 };
 
 let state = loadState();
+let familyPrefs = loadFamilyPrefs();
 const uiState = {
   dashboardSelectedDate: null,
   dashboardDayModalOpen: false,
@@ -146,6 +252,7 @@ const uiState = {
   aboutModalOpen: false,
   supportBannerQueued: false,
   supportBannerVisible: false,
+  onboardingVisible: false,
   appReady: false,
   dashboardQuickEdit: null,
   dashboardQuickPlacement: null,
@@ -174,6 +281,7 @@ const el = {
   importJsonBtn: document.getElementById("importJsonBtn"),
   importJsonFile: document.getElementById("importJsonFile"),
   globalSaveBtn: document.getElementById("globalSaveBtn"),
+  startPlanningBtn: document.getElementById("startPlanningBtn"),
   importReminderModal: document.getElementById("importReminderModal"),
   importReminderImportBtn: document.getElementById("importReminderImportBtn"),
   importReminderDismissBtn: document.getElementById("importReminderDismissBtn"),
@@ -186,6 +294,14 @@ const el = {
   tabButtons: Array.from(document.querySelectorAll(".tab-btn")),
   tabPanels: Array.from(document.querySelectorAll(".tab-panel")),
   metricGrid: document.getElementById("metricGrid"),
+  onboardingPanel: document.getElementById("onboardingPanel"),
+  loadSampleTripBtn: document.getElementById("loadSampleTripBtn"),
+  startEmptyTripBtn: document.getElementById("startEmptyTripBtn"),
+  dismissOnboardingBtn: document.getElementById("dismissOnboardingBtn"),
+  familyAdults: document.getElementById("familyAdults"),
+  familyChildren: document.getElementById("familyChildren"),
+  familySplitToggle: document.getElementById("familySplitToggle"),
+  familyBudgetSummary: document.getElementById("familyBudgetSummary"),
   categoryBreakdown: document.getElementById("categoryBreakdown"),
   dashboardItinerary: document.getElementById("dashboardItinerary"),
   dashboardDayDetail: document.getElementById("dashboardDayDetail"),
@@ -218,6 +334,7 @@ const el = {
   reportGenerated: document.getElementById("reportGenerated"),
   reportMetrics: document.getElementById("reportMetrics"),
   reportBreakdown: document.getElementById("reportBreakdown"),
+  reportFamilySummary: document.getElementById("reportFamilySummary"),
   reportTimeline: document.getElementById("reportTimeline"),
   backupLastUsed: document.getElementById("backupLastUsed"),
   backupDirtyStatus: document.getElementById("backupDirtyStatus"),
@@ -285,6 +402,51 @@ function loadState() {
   } catch {
     return normalizeImportedState(demoData);
   }
+}
+
+function loadFamilyPrefs() {
+  const adults = Math.max(0, Number(localStorage.getItem(FAMILY_ADULTS_KEY)) || 2);
+  const children = Math.max(0, Number(localStorage.getItem(FAMILY_CHILDREN_KEY)) || 0);
+  const splitByRole = localStorage.getItem(FAMILY_SPLIT_TOGGLE_KEY) === "1";
+  return { adults, children, splitByRole };
+}
+
+function saveFamilyPrefs() {
+  localStorage.setItem(FAMILY_ADULTS_KEY, String(Math.max(0, Number(familyPrefs.adults) || 0)));
+  localStorage.setItem(FAMILY_CHILDREN_KEY, String(Math.max(0, Number(familyPrefs.children) || 0)));
+  localStorage.setItem(FAMILY_SPLIT_TOGGLE_KEY, familyPrefs.splitByRole ? "1" : "0");
+}
+
+function isOnboardingDismissed() {
+  return localStorage.getItem(ONBOARDING_DISMISSED_KEY) === "1";
+}
+
+function dismissOnboarding() {
+  localStorage.setItem(ONBOARDING_DISMISSED_KEY, "1");
+  uiState.onboardingVisible = false;
+  render();
+}
+
+function syncOnboardingPanelVisibility() {
+  if (!el.onboardingPanel) return;
+  el.onboardingPanel.hidden = !uiState.onboardingVisible;
+}
+
+function buildEmptyState() {
+  return normalizeImportedState({
+    settings: {
+      tripName: "",
+      travelers: Math.max(1, (Number(familyPrefs.adults) || 0) + (Number(familyPrefs.children) || 0) || 2),
+      startDate: "",
+      endDate: "",
+      totalBudgetCad: 0,
+      usdToCadRate: 1.36,
+      customCategories: state?.settings?.customCategories || [],
+    },
+    activities: [],
+    costItems: [],
+    meta: {},
+  });
 }
 
 function saveState(markDirty = true) {
@@ -522,6 +684,53 @@ function dismissSupportBanner({ permanent = true } = {}) {
   if (el.supportBanner) el.supportBanner.hidden = true;
 }
 
+function getActiveModalElement() {
+  if (uiState.importReminderOpen && el.importReminderModal && !el.importReminderModal.hidden) return el.importReminderModal;
+  if (uiState.aboutModalOpen && el.aboutModal && !el.aboutModal.hidden) return el.aboutModal;
+  if (uiState.dashboardDayModalOpen && el.dashboardDayDetail && !el.dashboardDayDetail.hidden) return el.dashboardDayDetail;
+  return null;
+}
+
+function focusModalPrimaryAction(modalEl) {
+  if (!modalEl) return;
+  const target = modalEl.querySelector(
+    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  );
+  if (target instanceof HTMLElement) {
+    target.focus({ preventScroll: true });
+  }
+}
+
+function trapFocusInModal(event) {
+  if (event.key !== "Tab") return false;
+  const modalEl = getActiveModalElement();
+  if (!modalEl) return false;
+  const focusables = Array.from(
+    modalEl.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )
+  ).filter((node) => node instanceof HTMLElement && !node.hidden && node.offsetParent !== null);
+  if (!focusables.length) return false;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if (!(document.activeElement instanceof HTMLElement) || !modalEl.contains(document.activeElement)) {
+    event.preventDefault();
+    (event.shiftKey ? last : first).focus();
+    return true;
+  }
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+    return true;
+  }
+  if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+    return true;
+  }
+  return false;
+}
+
 function syncAboutModal() {
   if (!el.aboutModal) return;
   el.aboutModal.hidden = !uiState.aboutModalOpen;
@@ -532,12 +741,50 @@ function openAboutModal() {
   uiState.aboutModalOpen = true;
   syncAboutModal();
   renderSupportUi();
+  requestAnimationFrame(() => focusModalPrimaryAction(el.aboutModal));
 }
 
 function closeAboutModal() {
   uiState.aboutModalOpen = false;
   syncAboutModal();
   renderSupportUi();
+}
+
+function handleFamilyPrefsChange() {
+  familyPrefs.adults = Math.max(0, Number(el.familyAdults?.value) || 0);
+  familyPrefs.children = Math.max(0, Number(el.familyChildren?.value) || 0);
+  familyPrefs.splitByRole = Boolean(el.familySplitToggle?.checked);
+  saveFamilyPrefs();
+  state.settings.travelers = Math.max(1, familyPrefs.adults + familyPrefs.children || state.settings.travelers || 1);
+  saveState();
+  render();
+}
+
+function startPlanningFromHero() {
+  switchTab("itinerary");
+  showItineraryNewItemForm();
+  render();
+  requestAnimationFrame(() => el.activityInputs.title?.focus());
+}
+
+function loadSampleTripFromOnboarding() {
+  state = normalizeImportedState(demoData);
+  familyPrefs = { adults: 2, children: 2, splitByRole: true };
+  saveFamilyPrefs();
+  localStorage.setItem(ONBOARDING_DISMISSED_KEY, "1");
+  uiState.onboardingVisible = false;
+  saveState();
+  switchTab("dashboard");
+  render();
+}
+
+function startEmptyTripFromOnboarding() {
+  state = buildEmptyState();
+  localStorage.setItem(ONBOARDING_DISMISSED_KEY, "1");
+  uiState.onboardingVisible = false;
+  saveState();
+  switchTab("settings");
+  render();
 }
 
 function handleAboutModalClick(event) {
@@ -1405,6 +1652,24 @@ function calculateSummary() {
   const paidCad = totals.paidCadTotal;
   const outstandingCad = plannedCad - paidCad;
   const remainingCad = budgetCad - plannedCad;
+  const adults = Math.max(0, Number(familyPrefs.adults) || 0);
+  const children = Math.max(0, Number(familyPrefs.children) || 0);
+  const totalTravelers = adults + children;
+  const safeDiv = (value, divisor) => (divisor > 0 ? value / divisor : 0);
+  const familySummary = {
+    adults,
+    children,
+    totalTravelers,
+    plannedCad,
+    paidCad,
+    perPersonPlannedCad: safeDiv(plannedCad, totalTravelers),
+    perPersonPaidCad: safeDiv(paidCad, totalTravelers),
+    perAdultPlannedCad: safeDiv(plannedCad, adults),
+    perAdultPaidCad: safeDiv(paidCad, adults),
+    perChildPlannedCad: safeDiv(plannedCad, children),
+    perChildPaidCad: safeDiv(paidCad, children),
+    showSplitByRole: Boolean(familyPrefs.splitByRole),
+  };
 
   return {
     activities,
@@ -1417,6 +1682,7 @@ function calculateSummary() {
     paidCad,
     outstandingCad,
     remainingCad,
+    familySummary,
     tripDays: daysBetweenInclusive(state.settings.startDate, state.settings.endDate),
   };
 }
@@ -1428,12 +1694,54 @@ function syncSettingsInputs() {
   });
 }
 
+function renderFamilyBudgetSummary(summary) {
+  if (el.familyAdults) el.familyAdults.value = String(Math.max(0, Number(familyPrefs.adults) || 0));
+  if (el.familyChildren) el.familyChildren.value = String(Math.max(0, Number(familyPrefs.children) || 0));
+  if (el.familySplitToggle) el.familySplitToggle.checked = Boolean(familyPrefs.splitByRole);
+  if (!el.familyBudgetSummary) return;
+
+  const f = summary.familySummary;
+  const stats = [
+    ["Total travelers", String(f.totalTravelers)],
+    ["Total planned (CDN)", money(f.plannedCad, "CAD")],
+    ["Total paid (CDN)", money(f.paidCad, "CAD")],
+    ["Per person (planned)", f.totalTravelers ? money(f.perPersonPlannedCad, "CAD") : "—"],
+    ["Per person (paid)", f.totalTravelers ? money(f.perPersonPaidCad, "CAD") : "—"],
+  ];
+
+  if (f.showSplitByRole) {
+    stats.push(["Per adult (planned)", f.adults ? money(f.perAdultPlannedCad, "CAD") : "—"]);
+    stats.push(["Per adult (paid)", f.adults ? money(f.perAdultPaidCad, "CAD") : "—"]);
+    stats.push(["Per child (planned)", f.children ? money(f.perChildPlannedCad, "CAD") : "—"]);
+    stats.push(["Per child (paid)", f.children ? money(f.perChildPaidCad, "CAD") : "—"]);
+  }
+
+  el.familyBudgetSummary.innerHTML = stats
+    .map(
+      ([label, value]) => `
+        <div class="family-stat">
+          <div class="label">${label}</div>
+          <div class="value">${value}</div>
+        </div>
+      `
+    )
+    .join("");
+}
+
+function renderOnboardingPanel() {
+  uiState.onboardingVisible = !isOnboardingDismissed();
+  syncOnboardingPanelVisibility();
+}
+
 function renderDashboard(summary) {
   const s = state.settings;
   const days = summary.tripDays ? `${summary.tripDays} day${summary.tripDays === 1 ? "" : "s"}` : "Dates TBD";
-  el.heroTripTitle.textContent = s.tripName || "Trip Dashboard & Timeline";
+  const travelerCount = summary.familySummary.totalTravelers || s.travelers || 1;
+  el.heroTripTitle.textContent = "TravelPlanner";
   el.dashboardTripTitle.textContent = s.tripName || "Trip";
-  el.dashboardTripMeta.textContent = `${shortDate(s.startDate)} to ${shortDate(s.endDate)} • ${s.travelers || 1} traveler(s) • ${days}`;
+  el.dashboardTripMeta.textContent = `${shortDate(s.startDate)} to ${shortDate(s.endDate)} • ${travelerCount} traveler(s) • ${days}`;
+  renderOnboardingPanel();
+  renderFamilyBudgetSummary(summary);
 
   const metrics = [
     {
@@ -1598,9 +1906,10 @@ function renderCostItemsTable(summary) {
 
 function renderReport(summary) {
   const s = state.settings;
+  const travelerCount = summary.familySummary.totalTravelers || s.travelers || 1;
   el.reportTripName.textContent = s.tripName || "Vacation";
   const days = summary.tripDays ? `${summary.tripDays} day${summary.tripDays === 1 ? "" : "s"}` : "Dates TBD";
-  el.reportTripMeta.textContent = `${shortDate(s.startDate)} to ${shortDate(s.endDate)} • ${s.travelers || 1} traveler(s) • ${days}`;
+  el.reportTripMeta.textContent = `${shortDate(s.startDate)} to ${shortDate(s.endDate)} • ${travelerCount} traveler(s) • ${days}`;
   el.reportRate.textContent = `1 USD = ${(Number(s.usdToCadRate) || 0).toFixed(4)} CAD`;
   el.reportGenerated.textContent = new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
@@ -1624,6 +1933,41 @@ function renderReport(summary) {
       `
     )
     .join("");
+
+  if (el.reportFamilySummary) {
+    const f = summary.familySummary;
+    const familyRows = [
+      ["Adults", String(f.adults)],
+      ["Children", String(f.children)],
+      ["Total travelers", String(f.totalTravelers)],
+      ["Planned per person", f.totalTravelers ? money(f.perPersonPlannedCad, "CAD") : "—"],
+      ["Paid per person", f.totalTravelers ? money(f.perPersonPaidCad, "CAD") : "—"],
+    ];
+    if (f.showSplitByRole) {
+      familyRows.push(["Planned per adult", f.adults ? money(f.perAdultPlannedCad, "CAD") : "—"]);
+      familyRows.push(["Paid per adult", f.adults ? money(f.perAdultPaidCad, "CAD") : "—"]);
+      familyRows.push(["Planned per child", f.children ? money(f.perChildPlannedCad, "CAD") : "—"]);
+      familyRows.push(["Paid per child", f.children ? money(f.perChildPaidCad, "CAD") : "—"]);
+    }
+    el.reportFamilySummary.innerHTML = `
+      <div class="report-table">
+        <div class="report-table-row header two-col">
+          <div>Metric</div>
+          <div>Value</div>
+        </div>
+        ${familyRows
+          .map(
+            ([label, value]) => `
+              <div class="report-table-row two-col">
+                <div>${label}</div>
+                <div>${value}</div>
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    `;
+  }
 
   const breakdownRows = Object.entries(summary.byCategory).sort((a, b) => b[1].plannedCad - a[1].plannedCad);
   el.reportBreakdown.innerHTML = `
@@ -1936,8 +2280,14 @@ function handleCostsListClick(event) {
 
 function resetDemoData() {
   state = normalizeImportedState(demoData);
+  familyPrefs = { adults: 2, children: 2, splitByRole: true };
+  saveFamilyPrefs();
   saveState();
   render();
+}
+
+function dismissOnboardingPanelOnly() {
+  dismissOnboarding();
 }
 
 function exportJsonBackup() {
@@ -2072,6 +2422,7 @@ function openImportReminder() {
   uiState.importReminderOpen = true;
   syncImportReminderModal();
   renderSupportUi();
+  requestAnimationFrame(() => focusModalPrimaryAction(el.importReminderModal));
 }
 
 function closeImportReminder() {
@@ -2164,6 +2515,7 @@ function handleDashboardDayModalClick(event) {
 }
 
 function handleGlobalKeydown(event) {
+  if (trapFocusInModal(event)) return;
   if (event.key !== "Escape") return;
   if (uiState.importReminderOpen) {
     closeImportReminder();
@@ -2235,6 +2587,12 @@ Object.values(el.settings).forEach((input) => {
   input.addEventListener("change", updateSettingsFromInputs);
 });
 
+[el.familyAdults, el.familyChildren].forEach((input) => {
+  input?.addEventListener("input", handleFamilyPrefsChange);
+  input?.addEventListener("change", handleFamilyPrefsChange);
+});
+el.familySplitToggle?.addEventListener("change", handleFamilyPrefsChange);
+
 getCategorySelects().forEach((select) => {
   select.dataset.lastValue = select.value;
   select.addEventListener("change", handleCategorySelectChange);
@@ -2255,6 +2613,10 @@ el.dashboardItinerary.addEventListener("keydown", handleDashboardTimelineKeydown
 el.dashboardDayDetail.addEventListener("click", handleDashboardDayModalClick);
 el.printReportBtn.addEventListener("click", () => window.print());
 el.resetDemoBtn.addEventListener("click", resetDemoData);
+el.startPlanningBtn?.addEventListener("click", startPlanningFromHero);
+el.loadSampleTripBtn?.addEventListener("click", loadSampleTripFromOnboarding);
+el.startEmptyTripBtn?.addEventListener("click", startEmptyTripFromOnboarding);
+el.dismissOnboardingBtn?.addEventListener("click", dismissOnboardingPanelOnly);
 el.aboutAppBtn?.addEventListener("click", openAboutModal);
 el.footerAboutBtn?.addEventListener("click", openAboutModal);
 el.exportJsonBtn.addEventListener("click", exportJsonBackup);
