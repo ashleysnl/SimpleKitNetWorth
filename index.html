@@ -192,7 +192,9 @@
           <p>Add cost line items and optionally include them on the itinerary</p>
         </div>
 
-        <form id="costItemForm" class="activity-form no-print">
+        <div id="costsComposer" class="itinerary-composer no-print"></div>
+
+        <form id="costItemForm" class="activity-form no-print" hidden>
           <input type="hidden" id="costItemFormMode" value="add" />
           <input type="hidden" id="costItemEditId" />
           <div class="dashboard-quick-form-header">
@@ -266,7 +268,9 @@
           <button id="costItemFormSubmit" type="submit" class="btn btn-primary add-btn">Add Cost Item</button>
         </form>
 
-        <div class="table-wrap">
+        <div id="costsList" class="itinerary-list no-print"></div>
+
+        <div class="table-wrap itinerary-table-legacy" hidden>
           <table id="costItemsTable">
             <thead>
               <tr>
