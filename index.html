@@ -361,9 +361,27 @@
             <input type="number" id="totalBudgetCad" min="0" step="0.01" />
           </label>
           <label>
-            USD to CAD Rate (CDN)
-            <input type="number" id="usdToCadRate" min="0" step="0.0001" />
+            Display Currency
+            <select id="displayCurrency">
+              <option value="USD">USD</option>
+              <option value="CAD">CDN</option>
+              <option value="EUR">EUR</option>
+            </select>
           </label>
+          <details class="settings-currency-details form-span-full">
+            <summary>Currency exchange rates (edit)</summary>
+            <div class="settings-currency-grid">
+              <label>
+                USD to CAD Rate
+                <input type="number" id="usdToCadRate" min="0" step="0.0001" />
+              </label>
+              <label>
+                EUR to CAD Rate
+                <input type="number" id="eurToCadRate" min="0" step="0.0001" />
+              </label>
+            </div>
+            <p class="muted small-copy">Used to convert totals for your selected display currency.</p>
+          </details>
         </form>
 
         <div class="subsection no-print backup-tools">

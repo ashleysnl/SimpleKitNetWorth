@@ -26,7 +26,9 @@ const demoData = {
     startDate: "2026-04-27",
     endDate: "2026-05-07",
     totalBudgetCad: 11000,
+    displayCurrency: "USD",
     usdToCadRate: 1.36,
+    eurToCadRate: 1.47,
   },
   activities: [
     {
@@ -347,7 +349,9 @@ const el = {
     startDate: document.getElementById("startDate"),
     endDate: document.getElementById("endDate"),
     totalBudgetCad: document.getElementById("totalBudgetCad"),
+    displayCurrency: document.getElementById("displayCurrency"),
     usdToCadRate: document.getElementById("usdToCadRate"),
+    eurToCadRate: document.getElementById("eurToCadRate"),
   },
   activityInputs: {
     mode: document.getElementById("activityFormMode"),
@@ -443,7 +447,9 @@ function buildEmptyState() {
       startDate: "",
       endDate: "",
       totalBudgetCad: 0,
+      displayCurrency: "USD",
       usdToCadRate: 1.36,
+      eurToCadRate: 1.47,
       customCategories: state?.settings?.customCategories || [],
     },
     activities: [],
@@ -486,7 +492,9 @@ function normalizeImportedState(candidate) {
   normalized.settings.startDate = normalized.settings.startDate || "";
   normalized.settings.endDate = normalized.settings.endDate || "";
   normalized.settings.totalBudgetCad = Math.max(0, Number(normalized.settings.totalBudgetCad) || 0);
-  normalized.settings.usdToCadRate = Math.max(0, Number(normalized.settings.usdToCadRate) || 0);
+  normalized.settings.displayCurrency = normalizeDisplayCurrency(normalized.settings.displayCurrency || "USD");
+  normalized.settings.usdToCadRate = Math.max(0, Number(normalized.settings.usdToCadRate) || 1.36);
+  normalized.settings.eurToCadRate = Math.max(0, Number(normalized.settings.eurToCadRate) || 1.47);
   normalized.settings.customCategories = Array.isArray(normalized.settings.customCategories)
     ? [...new Set(normalized.settings.customCategories.map((c) => String(c || "").trim()).filter(Boolean))]
     : [];
@@ -554,6 +562,60 @@ function moneyRounded(value, currency = "USD") {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(Math.round(Number(value) || 0));
+}
+
+function normalizeDisplayCurrency(value) {
+  const raw = String(value || "").trim().toUpperCase();
+  if (raw === "CAD" || raw === "CDN") return "CAD";
+  if (raw === "EUR") return "EUR";
+  return "USD";
+}
+
+function displayCurrencyCode() {
+  return normalizeDisplayCurrency(state.settings?.displayCurrency || "USD");
+}
+
+function displayCurrencyLabel() {
+  return displayCurrencyCode() === "CAD" ? "CDN" : displayCurrencyCode();
+}
+
+function cadToDisplay(amountCad) {
+  const amount = Number(amountCad) || 0;
+  const code = displayCurrencyCode();
+  if (code === "CAD") return amount;
+  if (code === "USD") {
+    const rate = Number(state.settings?.usdToCadRate) || 1.36;
+    return rate > 0 ? amount / rate : 0;
+  }
+  if (code === "EUR") {
+    const rate = Number(state.settings?.eurToCadRate) || 1.47;
+    return rate > 0 ? amount / rate : 0;
+  }
+  return amount;
+}
+
+function moneyDisplayFromCad(amountCad) {
+  return money(cadToDisplay(amountCad), displayCurrencyCode());
+}
+
+function moneyDisplayRoundedFromCad(amountCad) {
+  return moneyRounded(cadToDisplay(amountCad), displayCurrencyCode());
+}
+
+function compactDisplayFromCad(amountCad) {
+  const displayValue = cadToDisplay(amountCad);
+  const v = Math.abs(displayValue);
+  const sign = displayValue < 0 ? "-" : "";
+  const code = displayCurrencyCode();
+  if (v >= 1000) {
+    const short = v >= 10000 ? (v / 1000).toFixed(0) : (v / 1000).toFixed(1);
+    const symbol =
+      new Intl.NumberFormat("en-US", { style: "currency", currency: code })
+        .formatToParts(1)
+        .find((part) => part.type === "currency")?.value || "";
+    return `${sign}${symbol}${short}k`;
+  }
+  return money(displayValue, code);
 }
 
 function compactCad(value) {
@@ -1758,17 +1820,17 @@ function renderTripSnapshot(summary) {
   const snapshotItems = [
     {
       label: "Budget",
-      value: Number(summary.budgetCad) > 0 ? moneyRounded(summary.budgetCad, "CAD") : "—",
+      value: Number(summary.budgetCad) > 0 ? moneyDisplayRoundedFromCad(summary.budgetCad) : "—",
       sub: Number(summary.budgetCad) > 0 ? "Trip budget" : "Set budget in Settings",
     },
     {
       label: "Forecasted Cost",
-      value: hasCosts ? moneyRounded(summary.plannedCad, "CAD") : "—",
+      value: hasCosts ? moneyDisplayRoundedFromCad(summary.plannedCad) : "—",
       sub: hasCosts ? "Forecast total" : "Add costs to calculate",
     },
     {
       label: "Paid to Date",
-      value: hasCosts ? moneyRounded(summary.paidCad, "CAD") : "—",
+      value: hasCosts ? moneyDisplayRoundedFromCad(summary.paidCad) : "—",
       sub: hasCosts ? "Paid so far" : "Add costs to calculate",
     },
     {
@@ -1926,7 +1988,6 @@ function renderDashboard(summary) {
   el.dashboardTripTitle.textContent = s.tripName || "Trip";
   el.dashboardTripMeta.textContent = `${shortDate(s.startDate)} to ${shortDate(s.endDate)} • ${travelerCount} traveler(s) • ${days}`;
   renderOnboardingPanel();
-  renderFamilyBudgetSummary(summary);
 
   if (el.metricGrid) {
     el.metricGrid.innerHTML = "";
@@ -1965,7 +2026,7 @@ function renderDashboard(summary) {
               <div class="donut-legend-row">
                 <span class="swatch" style="background:${seg.color}"></span>
                 <span class="legend-name">${escapeHtml(seg.name)}</span>
-                <span class="legend-value">${money(seg.data.plannedCad, "CAD")}</span>
+                <span class="legend-value">${moneyDisplayFromCad(seg.data.plannedCad)}</span>
                 <span class="legend-pct">${seg.share.toFixed(0)}%</span>
               </div>
             `
@@ -1978,8 +2039,8 @@ function renderDashboard(summary) {
               <div class="donut-chart" style="background: conic-gradient(${gradient});">
                 <div class="donut-hole">
                   <span class="donut-label">Forecast</span>
-                  <strong>${compactCad(summary.plannedCad)}</strong>
-                  <small class="donut-note">CDN</small>
+                  <strong>${compactDisplayFromCad(summary.plannedCad)}</strong>
+                  <small class="donut-note">${displayCurrencyLabel()}</small>
                 </div>
               </div>
             </div>
@@ -2064,17 +2125,17 @@ function renderReport(summary) {
   el.reportTripName.textContent = s.tripName || "Vacation";
   const days = summary.tripDays ? `${summary.tripDays} day${summary.tripDays === 1 ? "" : "s"}` : "Dates TBD";
   el.reportTripMeta.textContent = `${shortDate(s.startDate)} to ${shortDate(s.endDate)} • ${travelerCount} traveler(s) • ${days}`;
-  el.reportRate.textContent = `1 USD = ${(Number(s.usdToCadRate) || 0).toFixed(4)} CAD`;
+  el.reportRate.textContent = `Display: ${displayCurrencyLabel()} • 1 USD = ${(Number(s.usdToCadRate) || 0).toFixed(4)} CAD • 1 EUR = ${(Number(s.eurToCadRate) || 0).toFixed(4)} CAD`;
   el.reportGenerated.textContent = new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date());
 
   const reportMetrics = [
-    ["Budget (CDN)", money(summary.budgetCad, "CAD")],
-    ["Forecast (CDN)", money(summary.plannedCad, "CAD")],
-    ["Paid (CDN)", money(summary.paidCad, "CAD")],
-    ["Outstanding (CDN)", money(summary.outstandingCad, "CAD")],
+    [`Budget (${displayCurrencyLabel()})`, moneyDisplayFromCad(summary.budgetCad)],
+    [`Forecast (${displayCurrencyLabel()})`, moneyDisplayFromCad(summary.plannedCad)],
+    [`Paid (${displayCurrencyLabel()})`, moneyDisplayFromCad(summary.paidCad)],
+    [`Outstanding (${displayCurrencyLabel()})`, moneyDisplayFromCad(summary.outstandingCad)],
   ];
 
   el.reportMetrics.innerHTML = reportMetrics
@@ -2094,16 +2155,16 @@ function renderReport(summary) {
       ["Adults", String(f.adults)],
       ["Children", String(f.children)],
       ["Total travelers", String(f.totalTravelers)],
-      ["Total forecasted cost", money(f.plannedCad, "CAD")],
-      ["Total paid cost", money(f.paidCad, "CAD")],
-      ["Forecast per person", f.totalTravelers ? money(f.perPersonPlannedCad, "CAD") : "—"],
-      ["Paid per person", f.totalTravelers ? money(f.perPersonPaidCad, "CAD") : "—"],
+      ["Total forecasted cost", moneyDisplayFromCad(f.plannedCad)],
+      ["Total paid cost", moneyDisplayFromCad(f.paidCad)],
+      ["Forecast per person", f.totalTravelers ? moneyDisplayFromCad(f.perPersonPlannedCad) : "—"],
+      ["Paid per person", f.totalTravelers ? moneyDisplayFromCad(f.perPersonPaidCad) : "—"],
     ];
     if (f.showSplitByRole) {
-      familyRows.push(["Forecast per adult", f.adults ? money(f.perAdultPlannedCad, "CAD") : "—"]);
-      familyRows.push(["Paid per adult", f.adults ? money(f.perAdultPaidCad, "CAD") : "—"]);
-      familyRows.push(["Forecast per child", f.children ? money(f.perChildPlannedCad, "CAD") : "—"]);
-      familyRows.push(["Paid per child", f.children ? money(f.perChildPaidCad, "CAD") : "—"]);
+      familyRows.push(["Forecast per adult", f.adults ? moneyDisplayFromCad(f.perAdultPlannedCad) : "—"]);
+      familyRows.push(["Paid per adult", f.adults ? moneyDisplayFromCad(f.perAdultPaidCad) : "—"]);
+      familyRows.push(["Forecast per child", f.children ? moneyDisplayFromCad(f.perChildPlannedCad) : "—"]);
+      familyRows.push(["Paid per child", f.children ? moneyDisplayFromCad(f.perChildPaidCad) : "—"]);
     }
     el.reportFamilySummary.innerHTML = `
       <div class="report-table">
@@ -2130,8 +2191,8 @@ function renderReport(summary) {
     <div class="report-table">
       <div class="report-table-row header">
         <div>Category</div>
-        <div>Forecast (CDN)</div>
-        <div>Paid (CDN)</div>
+        <div>Forecast (${displayCurrencyLabel()})</div>
+        <div>Paid (${displayCurrencyLabel()})</div>
         <div>Paid %</div>
       </div>
       ${
@@ -2142,8 +2203,8 @@ function renderReport(summary) {
                 return `
                   <div class="report-table-row">
                     <div>${escapeHtml(category)}</div>
-                    <div>${money(data.plannedCad, "CAD")}</div>
-                    <div>${money(data.paidCad, "CAD")}</div>
+                    <div>${moneyDisplayFromCad(data.plannedCad)}</div>
+                    <div>${moneyDisplayFromCad(data.paidCad)}</div>
                     <div>${pct.toFixed(0)}%</div>
                   </div>
                 `;
@@ -2201,7 +2262,9 @@ function updateSettingsFromInputs() {
   state.settings.startDate = el.settings.startDate.value;
   state.settings.endDate = el.settings.endDate.value;
   state.settings.totalBudgetCad = Number(el.settings.totalBudgetCad.value) || 0;
+  state.settings.displayCurrency = normalizeDisplayCurrency(el.settings.displayCurrency?.value || "USD");
   state.settings.usdToCadRate = Number(el.settings.usdToCadRate.value) || 0;
+  state.settings.eurToCadRate = Number(el.settings.eurToCadRate?.value) || 0;
   syncFamilyPrefsFromTravelerCount(state.settings.travelers);
   saveState();
   render();
