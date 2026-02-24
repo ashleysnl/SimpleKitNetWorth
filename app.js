@@ -760,6 +760,25 @@ function handleFamilyPrefsChange() {
   render();
 }
 
+function syncFamilyPrefsFromTravelerCount(travelerCount) {
+  const total = Math.max(1, Number(travelerCount) || 1);
+  const currentAdults = Math.max(0, Number(familyPrefs.adults) || 0);
+  const currentChildren = Math.max(0, Number(familyPrefs.children) || 0);
+
+  if (currentAdults + currentChildren === total) return;
+
+  // Preserve the current child count when possible, and adjust adults to match the new total.
+  if (currentChildren > total) {
+    familyPrefs.children = total;
+    familyPrefs.adults = 0;
+  } else {
+    familyPrefs.children = currentChildren;
+    familyPrefs.adults = total - currentChildren;
+  }
+
+  saveFamilyPrefs();
+}
+
 function startPlanningFromHero() {
   switchTab("itinerary");
   showItineraryNewItemForm();
@@ -2043,6 +2062,7 @@ function updateSettingsFromInputs() {
   state.settings.endDate = el.settings.endDate.value;
   state.settings.totalBudgetCad = Number(el.settings.totalBudgetCad.value) || 0;
   state.settings.usdToCadRate = Number(el.settings.usdToCadRate.value) || 0;
+  syncFamilyPrefsFromTravelerCount(state.settings.travelers);
   saveState();
   render();
 }
