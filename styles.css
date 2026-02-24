@@ -537,6 +537,51 @@ body {
   min-width: 0;
 }
 
+.settings-inline-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+.settings-mini-group {
+  display: grid;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 8px;
+}
+
+.settings-mini-head {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0 2px;
+}
+
+.settings-mini-group .settings-inline-grid {
+  gap: 8px;
+}
+
+.settings-budget-row {
+  grid-template-columns: minmax(0, 1.35fr) minmax(132px, 0.65fr);
+  gap: 10px;
+  align-items: end;
+}
+
+.settings-budget-field,
+.settings-display-field {
+  min-width: 0;
+}
+
+.settings-budget-field input,
+.settings-display-field select {
+  width: 100%;
+}
+
 .control-panel .stack-form label {
   gap: 4px;
 }
@@ -1848,6 +1893,14 @@ td {
     gap: 8px;
   }
 
+  .settings-inline-grid {
+    gap: 8px;
+  }
+
+  .settings-budget-row {
+    grid-template-columns: minmax(0, 1.2fr) minmax(112px, 0.8fr);
+  }
+
   .control-panel .stack-form label {
     font-size: 0.84rem;
   }
@@ -1856,6 +1909,14 @@ td {
   .control-panel .stack-form select {
     min-height: 36px;
     padding: 8px 10px;
+  }
+
+  .settings-mini-group {
+    padding: 7px;
+  }
+
+  .settings-mini-head {
+    font-size: 0.74rem;
   }
 
   .settings-currency-grid {

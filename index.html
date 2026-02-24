@@ -332,21 +332,10 @@
         </div>
 
         <form id="settingsForm" class="stack-form">
+          <input type="hidden" id="travelers" value="2" />
           <label class="form-span-full">
             Trip Name
             <input type="text" id="tripName" placeholder="Family Vacation" />
-          </label>
-          <label class="settings-half-field">
-            Travelers
-            <input type="number" id="travelers" min="1" value="2" />
-          </label>
-          <label class="settings-half-field">
-            Adults
-            <input type="number" id="settingsAdults" min="0" step="1" value="2" />
-          </label>
-          <label class="settings-half-field">
-            Kids
-            <input type="number" id="settingsChildren" min="0" step="1" value="0" />
           </label>
           <label class="settings-half-field">
             Start Date
@@ -356,18 +345,33 @@
             End Date
             <input type="date" id="endDate" />
           </label>
-          <label class="form-span-full">
-            <span id="totalBudgetLabelText">Total Budget (USD)</span>
-            <input type="number" id="totalBudgetCad" min="0" step="0.01" />
-          </label>
-          <label class="settings-half-field">
-            Display Currency
-            <select id="displayCurrency">
-              <option value="USD">USD</option>
-              <option value="CAD">CDN</option>
-              <option value="EUR">EUR</option>
-            </select>
-          </label>
+          <div class="settings-mini-group form-span-full" aria-labelledby="travelersGroupTitle">
+            <div id="travelersGroupTitle" class="settings-mini-head">Travelers</div>
+            <div class="settings-inline-grid">
+              <label class="settings-half-field">
+                Adults
+                <input type="number" id="settingsAdults" min="0" step="1" value="2" />
+              </label>
+              <label class="settings-half-field">
+                Kids
+                <input type="number" id="settingsChildren" min="0" step="1" value="0" />
+              </label>
+            </div>
+          </div>
+          <div class="settings-inline-grid settings-budget-row form-span-full">
+            <label class="settings-budget-field">
+              <span id="totalBudgetLabelText">Total Budget (USD)</span>
+              <input type="number" id="totalBudgetCad" min="0" step="0.01" />
+            </label>
+            <label class="settings-display-field">
+              Display Currency
+              <select id="displayCurrency">
+                <option value="USD">USD</option>
+                <option value="CAD">CDN</option>
+                <option value="EUR">EUR</option>
+              </select>
+            </label>
+          </div>
           <details class="settings-currency-details form-span-full">
             <summary>Currency exchange rates (edit)</summary>
             <div class="settings-currency-grid">
