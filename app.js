@@ -2971,7 +2971,7 @@ el.dashboardItinerary.addEventListener("keydown", handleDashboardTimelineKeydown
 el.dashboardDayDetail.addEventListener("click", handleDashboardDayModalClick);
 el.printReportBtn.addEventListener("click", () => window.print());
 el.resetDemoBtn.addEventListener("click", resetDemoData);
-el.startPlanningBtn?.addEventListener("click", startPlanningFromHero);
+el.startPlanningBtn?.addEventListener("click", () => openImportPicker({ confirmReplace: true }));
 el.loadSampleTripBtn?.addEventListener("click", loadSampleTripFromOnboarding);
 el.startEmptyTripBtn?.addEventListener("click", startEmptyTripFromOnboarding);
 el.onboardingImportBackupBtn?.addEventListener("click", () => openImportPicker({ confirmReplace: false }));
