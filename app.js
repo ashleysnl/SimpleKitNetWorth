@@ -2,6 +2,14 @@ const STORAGE_KEY = "vacationTripTracker.v2";
 const LEGACY_STORAGE_KEYS = ["floridaVacationTracker.v1"];
 const BACKUP_VERSION = 1;
 const BASE_CATEGORIES = ["Lodging", "Transportation", "Food", "Activities", "Park Passes", "Shopping", "Misc"];
+const SUPPORT_BANNER_DISMISSED_KEY = "travelplanner_support_banner_dismissed";
+const SUPPORT_BANNER_SHOWN_KEY = "travelplanner_support_banner_shown";
+const FAMILY_ADULTS_KEY = "travelplanner_trip_adults";
+const FAMILY_CHILDREN_KEY = "travelplanner_trip_children";
+const FAMILY_SPLIT_TOGGLE_KEY = "travelplanner_family_split_toggle";
+const ONBOARDING_DISMISSED_KEY = "travelplanner_onboarding_dismissed";
+const ITIN_FORM_MODE_KEY = "travelplanner_itin_form_mode";
+const COST_FORM_MODE_KEY = "travelplanner_cost_form_mode";
 
 function makeId() {
   if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
@@ -15,136 +23,250 @@ function cloneDeep(value) {
 
 const demoData = {
   settings: {
-    tripName: "Spring Getaway",
-    travelers: 2,
-    startDate: "2026-04-12",
-    endDate: "2026-04-19",
-    totalBudgetCad: 5712,
+    tripName: "Sample Family Theme Park Trip (Demo)",
+    travelers: 4,
+    startDate: "2026-04-27",
+    endDate: "2026-05-07",
+    totalBudgetCad: 11000,
+    displayCurrency: "USD",
     usdToCadRate: 1.36,
+    eurToCadRate: 1.47,
   },
   activities: [
     {
       id: makeId(),
-      date: "2026-04-12",
-      time: "10:30",
-      title: "Outbound Flight",
-      location: "Airport",
+      date: "2026-04-27",
+      time: "07:30",
+      title: "Flight to Orlando",
+      location: "YYZ Airport",
       category: "Transportation",
-      plannedUsd: 740,
-      paidUsd: 740,
+      currency: "CAD",
+      plannedUsd: 964.24,
+      paidUsd: 964.24,
       status: "Paid",
+      notes: "Family seats booked together",
     },
     {
       id: makeId(),
-      date: "2026-04-12",
+      date: "2026-04-27",
       time: "16:00",
       title: "Hotel Check-In",
-      location: "Downtown Hotel",
+      location: "Resort Hotel",
       category: "Lodging",
+      currency: "USD",
       plannedUsd: 1180,
       paidUsd: 400,
       status: "Booked",
+      notes: "Request adjoining rooms if available",
     },
     {
       id: makeId(),
-      date: "2026-04-13",
+      date: "2026-04-28",
       time: "09:00",
-      title: "Museum & City Tour",
-      location: "City Center",
-      category: "Activities",
+      title: "Epic Universe",
+      location: "Orlando",
+      category: "Park Passes",
+      currency: "USD",
       plannedUsd: 520,
       paidUsd: 520,
       status: "Paid",
     },
     {
       id: makeId(),
-      date: "2026-04-14",
-      time: "19:00",
+      date: "2026-04-29",
+      time: "18:30",
       title: "Dinner Reservation",
-      location: "Waterfront District",
+      location: "Disney Springs",
       category: "Food",
+      currency: "USD",
       plannedUsd: 180,
       paidUsd: 0,
       status: "Planned",
     },
     {
       id: makeId(),
-      date: "2026-04-16",
-      time: "08:30",
-      title: "Scenic Day Excursion",
-      location: "Regional Attraction",
+      date: "2026-05-01",
+      time: "08:45",
+      title: "Magic Kingdom",
+      location: "Walt Disney World",
+      category: "Park Passes",
+      currency: "USD",
+      plannedUsd: 620,
+      paidUsd: 0,
+      status: "Booked",
+    },
+    {
+      id: makeId(),
+      date: "2026-05-02",
+      time: "10:30",
+      title: "Pool + Rest Day",
+      location: "Resort",
       category: "Activities",
+      currency: "CAD",
+      plannedUsd: 0,
+      paidUsd: 0,
+      status: "Planned",
+      notes: "No major spending planned",
+    },
+    {
+      id: makeId(),
+      date: "2026-05-03",
+      time: "09:15",
+      title: "Kennedy Space Center",
+      location: "Cape Canaveral",
+      category: "Activities",
+      currency: "USD",
       plannedUsd: 260,
       paidUsd: 0,
       status: "Booked",
     },
     {
       id: makeId(),
-      date: "2026-04-17",
-      time: "12:00",
-      title: "Relaxing Day & Lunch",
-      location: "Beachfront",
-      category: "Food",
-      plannedUsd: 140,
-      paidUsd: 65,
-      status: "Booked",
+      date: "2026-05-04",
+      time: "10:00",
+      title: "LEGOLAND Day Trip",
+      location: "Winter Haven",
+      category: "Activities",
+      currency: "USD",
+      plannedUsd: 310,
+      paidUsd: 0,
+      status: "Planned",
     },
     {
       id: makeId(),
-      date: "2026-04-18",
+      date: "2026-05-06",
       time: "14:00",
       title: "Souvenir Shopping",
-      location: "Market District",
+      location: "Outlet Mall",
       category: "Shopping",
+      currency: "USD",
       plannedUsd: 220,
       paidUsd: 0,
       status: "Planned",
     },
     {
       id: makeId(),
-      date: "2026-04-19",
+      date: "2026-05-07",
       time: "13:15",
       title: "Return Flight Home",
       location: "Airport",
       category: "Transportation",
-      plannedUsd: 660,
-      paidUsd: 660,
+      currency: "CAD",
+      plannedUsd: 882.40,
+      paidUsd: 882.40,
       status: "Paid",
     },
   ],
   costItems: [
     {
       id: makeId(),
-      title: "Travel Insurance",
+      title: "Travel Insurance (Family)",
       category: "Misc",
-      plannedUsd: 155,
-      paidUsd: 155,
+      currency: "CAD",
+      plannedUsd: 210,
+      paidUsd: 210,
       includeInItinerary: false,
+      notes: "Policy numbers stored in email",
     },
     {
       id: makeId(),
       title: "Airport Parking",
       category: "Transportation",
+      currency: "CAD",
       plannedUsd: 95,
+      paidUsd: 95,
+      includeInItinerary: true,
+      itineraryDate: "2026-04-27",
+      itineraryTime: "05:30",
+      itineraryLocation: "Home Airport",
+      itineraryStatus: "Paid",
+    },
+    {
+      id: makeId(),
+      title: "Hertz Car Rental",
+      category: "Transportation",
+      currency: "USD",
+      plannedUsd: 420,
+      paidUsd: 120,
+      includeInItinerary: true,
+      itineraryDate: "2026-04-27",
+      itineraryTime: "11:00",
+      itineraryLocation: "Orlando Airport",
+      itineraryStatus: "Booked",
+    },
+    {
+      id: makeId(),
+      title: "4-Day Park Tickets",
+      category: "Park Passes",
+      currency: "USD",
+      plannedUsd: 1680,
+      paidUsd: 1680,
+      includeInItinerary: false,
+      notes: "Includes one park hopper day",
+    },
+    {
+      id: makeId(),
+      title: "Grocery Run",
+      category: "Food",
+      currency: "USD",
+      plannedUsd: 180,
       paidUsd: 0,
       includeInItinerary: true,
-      itineraryDate: "2026-04-12",
-      itineraryTime: "08:30",
-      itineraryLocation: "Home Airport",
+      itineraryDate: "2026-04-27",
+      itineraryTime: "18:30",
+      itineraryLocation: "Nearby supermarket",
       itineraryStatus: "Planned",
+    },
+    {
+      id: makeId(),
+      title: "PhotoPass / Memory Package",
+      category: "Activities",
+      currency: "USD",
+      plannedUsd: 220,
+      paidUsd: 0,
+      includeInItinerary: false,
+    },
+    {
+      id: makeId(),
+      title: "Souvenir Budget Envelope",
+      category: "Shopping",
+      currency: "CAD",
+      plannedUsd: 300,
+      paidUsd: 0,
+      includeInItinerary: false,
+    },
+    {
+      id: makeId(),
+      title: "Resort Parking + Fees",
+      category: "Lodging",
+      currency: "USD",
+      plannedUsd: 95,
+      paidUsd: 0,
+      includeInItinerary: false,
     },
   ],
 };
 
 let state = loadState();
+let familyPrefs = loadFamilyPrefs();
 const uiState = {
   dashboardSelectedDate: null,
   dashboardDayModalOpen: false,
   importReminderOpen: false,
+  aboutModalOpen: false,
+  supportBannerQueued: false,
+  supportBannerVisible: false,
+  toastTimer: null,
+  onboardingVisible: false,
+  appReady: false,
   dashboardQuickEdit: null,
+  dashboardQuickPlacement: null,
+  itineraryFormPlacement: null,
+  costFormPlacement: null,
   itineraryEditId: null,
   costItemEditId: null,
 };
+let bodyScrollLockY = 0;
 
 const el = {
   settingsForm: document.getElementById("settingsForm"),
@@ -158,17 +280,34 @@ const el = {
   costItemFormSubmit: document.getElementById("costItemFormSubmit"),
   printReportBtn: document.getElementById("printReportBtn"),
   resetDemoBtn: document.getElementById("resetDemoBtn"),
+  aboutAppBtn: document.getElementById("aboutAppBtn"),
+  footerAboutBtn: document.getElementById("footerAboutBtn"),
   exportJsonBtn: document.getElementById("exportJsonBtn"),
   importJsonBtn: document.getElementById("importJsonBtn"),
   importJsonFile: document.getElementById("importJsonFile"),
   globalSaveBtn: document.getElementById("globalSaveBtn"),
+  startPlanningBtn: document.getElementById("startPlanningBtn"),
   importReminderModal: document.getElementById("importReminderModal"),
   importReminderImportBtn: document.getElementById("importReminderImportBtn"),
   importReminderDismissBtn: document.getElementById("importReminderDismissBtn"),
   importReminderLastUsed: document.getElementById("importReminderLastUsed"),
+  aboutModal: document.getElementById("aboutModal"),
+  aboutModalClose: document.getElementById("aboutModalClose"),
+  supportBanner: document.getElementById("supportBanner"),
+  supportBannerDismissBtn: document.getElementById("supportBannerDismissBtn"),
+  supportBannerCoffeeLink: document.getElementById("supportBannerCoffeeLink"),
   tabButtons: Array.from(document.querySelectorAll(".tab-btn")),
   tabPanels: Array.from(document.querySelectorAll(".tab-panel")),
   metricGrid: document.getElementById("metricGrid"),
+  onboardingPanel: document.getElementById("onboardingPanel"),
+  loadSampleTripBtn: document.getElementById("loadSampleTripBtn"),
+  startEmptyTripBtn: document.getElementById("startEmptyTripBtn"),
+  onboardingImportBackupBtn: document.getElementById("onboardingImportBackupBtn"),
+  dismissOnboardingBtn: document.getElementById("dismissOnboardingBtn"),
+  familyAdults: document.getElementById("familyAdults"),
+  familyChildren: document.getElementById("familyChildren"),
+  familySplitToggle: document.getElementById("familySplitToggle"),
+  familyBudgetSummary: document.getElementById("familyBudgetSummary"),
   categoryBreakdown: document.getElementById("categoryBreakdown"),
   dashboardItinerary: document.getElementById("dashboardItinerary"),
   dashboardDayDetail: document.getElementById("dashboardDayDetail"),
@@ -176,6 +315,7 @@ const el = {
   dashboardDayDetailTitle: document.getElementById("dashboardDayDetailTitle"),
   dashboardDayDetailMeta: document.getElementById("dashboardDayDetailMeta"),
   dashboardDayDetailList: document.getElementById("dashboardDayDetailList"),
+  dashboardDayDetailComposer: document.getElementById("dashboardDayDetailComposer"),
   dashboardQuickActivityForm: document.getElementById("dashboardQuickActivityForm"),
   dashboardQuickFormTitle: document.getElementById("dashboardQuickFormTitle"),
   dashboardQuickFormCancelEdit: document.getElementById("dashboardQuickFormCancelEdit"),
@@ -183,7 +323,14 @@ const el = {
   heroTripTitle: document.getElementById("heroTripTitle"),
   dashboardTripTitle: document.getElementById("dashboardTripTitle"),
   dashboardTripMeta: document.getElementById("dashboardTripMeta"),
+  dashboardCategoryBreakdownTitle: document.getElementById("dashboardCategoryBreakdownTitle"),
+  tripSnapshotGrid: document.getElementById("tripSnapshotGrid"),
   dashboardTimelineRange: document.getElementById("dashboardTimelineRange"),
+  appToast: document.getElementById("appToast"),
+  itineraryComposer: document.getElementById("itineraryComposer"),
+  itineraryList: document.getElementById("itineraryList"),
+  costsComposer: document.getElementById("costsComposer"),
+  costsList: document.getElementById("costsList"),
   activitiesTableBody: document.querySelector("#activitiesTable tbody"),
   costItemsTableBody: document.querySelector("#costItemsTable tbody"),
   plannedBudgetPct: document.getElementById("plannedBudgetPct"),
@@ -196,16 +343,22 @@ const el = {
   reportGenerated: document.getElementById("reportGenerated"),
   reportMetrics: document.getElementById("reportMetrics"),
   reportBreakdown: document.getElementById("reportBreakdown"),
+  reportFamilySummary: document.getElementById("reportFamilySummary"),
   reportTimeline: document.getElementById("reportTimeline"),
   backupLastUsed: document.getElementById("backupLastUsed"),
   backupDirtyStatus: document.getElementById("backupDirtyStatus"),
+  settingsAdults: document.getElementById("settingsAdults"),
+  settingsChildren: document.getElementById("settingsChildren"),
+  totalBudgetLabelText: document.getElementById("totalBudgetLabelText"),
   settings: {
     tripName: document.getElementById("tripName"),
     travelers: document.getElementById("travelers"),
     startDate: document.getElementById("startDate"),
     endDate: document.getElementById("endDate"),
     totalBudgetCad: document.getElementById("totalBudgetCad"),
+    displayCurrency: document.getElementById("displayCurrency"),
     usdToCadRate: document.getElementById("usdToCadRate"),
+    eurToCadRate: document.getElementById("eurToCadRate"),
   },
   activityInputs: {
     mode: document.getElementById("activityFormMode"),
@@ -214,11 +367,16 @@ const el = {
     time: document.getElementById("activityTime"),
     title: document.getElementById("activityTitle"),
     location: document.getElementById("activityLocation"),
+    notes: document.getElementById("activityNotes"),
     category: document.getElementById("activityCategory"),
     currency: document.getElementById("activityCurrency"),
     plannedUsd: document.getElementById("activityPlannedUsd"),
     paidUsd: document.getElementById("activityPaidUsd"),
     status: document.getElementById("activityStatus"),
+  },
+  activityFormModeButtons: {
+    basic: document.getElementById("activityFormBasicBtn"),
+    advanced: document.getElementById("activityFormAdvancedBtn"),
   },
   costItemInputs: {
     mode: document.getElementById("costItemFormMode"),
@@ -232,7 +390,12 @@ const el = {
     itineraryDate: document.getElementById("costItemItineraryDate"),
     itineraryTime: document.getElementById("costItemItineraryTime"),
     itineraryLocation: document.getElementById("costItemItineraryLocation"),
+    notes: document.getElementById("costItemNotes"),
     itineraryStatus: document.getElementById("costItemItineraryStatus"),
+  },
+  costItemFormModeButtons: {
+    basic: document.getElementById("costItemFormBasicBtn"),
+    advanced: document.getElementById("costItemFormAdvancedBtn"),
   },
   dashboardQuickActivityInputs: {
     date: document.getElementById("dashboardQuickActivityDate"),
@@ -242,6 +405,7 @@ const el = {
     time: document.getElementById("dashboardQuickActivityTime"),
     title: document.getElementById("dashboardQuickActivityTitle"),
     location: document.getElementById("dashboardQuickActivityLocation"),
+    notes: document.getElementById("dashboardQuickActivityNotes"),
     category: document.getElementById("dashboardQuickActivityCategory"),
     currency: document.getElementById("dashboardQuickActivityCurrency"),
     plannedUsd: document.getElementById("dashboardQuickActivityPlannedUsd"),
@@ -262,6 +426,53 @@ function loadState() {
   }
 }
 
+function loadFamilyPrefs() {
+  const adults = Math.max(0, Number(localStorage.getItem(FAMILY_ADULTS_KEY)) || 2);
+  const children = Math.max(0, Number(localStorage.getItem(FAMILY_CHILDREN_KEY)) || 0);
+  const splitByRole = localStorage.getItem(FAMILY_SPLIT_TOGGLE_KEY) === "1";
+  return { adults, children, splitByRole };
+}
+
+function saveFamilyPrefs() {
+  localStorage.setItem(FAMILY_ADULTS_KEY, String(Math.max(0, Number(familyPrefs.adults) || 0)));
+  localStorage.setItem(FAMILY_CHILDREN_KEY, String(Math.max(0, Number(familyPrefs.children) || 0)));
+  localStorage.setItem(FAMILY_SPLIT_TOGGLE_KEY, familyPrefs.splitByRole ? "1" : "0");
+}
+
+function isOnboardingDismissed() {
+  return localStorage.getItem(ONBOARDING_DISMISSED_KEY) === "1";
+}
+
+function dismissOnboarding() {
+  localStorage.setItem(ONBOARDING_DISMISSED_KEY, "1");
+  uiState.onboardingVisible = false;
+  render();
+}
+
+function syncOnboardingPanelVisibility() {
+  if (!el.onboardingPanel) return;
+  el.onboardingPanel.hidden = !uiState.onboardingVisible;
+}
+
+function buildEmptyState() {
+  return normalizeImportedState({
+    settings: {
+      tripName: "",
+      travelers: Math.max(1, (Number(familyPrefs.adults) || 0) + (Number(familyPrefs.children) || 0) || 2),
+      startDate: "",
+      endDate: "",
+      totalBudgetCad: 0,
+      displayCurrency: "USD",
+      usdToCadRate: 1.36,
+      eurToCadRate: 1.47,
+      customCategories: state?.settings?.customCategories || [],
+    },
+    activities: [],
+    costItems: [],
+    meta: {},
+  });
+}
+
 function saveState(markDirty = true) {
   if (markDirty) {
     state.meta = state.meta || {};
@@ -269,6 +480,9 @@ function saveState(markDirty = true) {
     state.meta.backup.lastDataChangeAt = new Date().toISOString();
   }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  if (markDirty) {
+    maybeQueueSupportBannerAfterMeaningfulAction();
+  }
 }
 
 function normalizeImportedState(candidate) {
@@ -293,7 +507,9 @@ function normalizeImportedState(candidate) {
   normalized.settings.startDate = normalized.settings.startDate || "";
   normalized.settings.endDate = normalized.settings.endDate || "";
   normalized.settings.totalBudgetCad = Math.max(0, Number(normalized.settings.totalBudgetCad) || 0);
-  normalized.settings.usdToCadRate = Math.max(0, Number(normalized.settings.usdToCadRate) || 0);
+  normalized.settings.displayCurrency = normalizeDisplayCurrency(normalized.settings.displayCurrency || "USD");
+  normalized.settings.usdToCadRate = Math.max(0, Number(normalized.settings.usdToCadRate) || 1.36);
+  normalized.settings.eurToCadRate = Math.max(0, Number(normalized.settings.eurToCadRate) || 1.47);
   normalized.settings.customCategories = Array.isArray(normalized.settings.customCategories)
     ? [...new Set(normalized.settings.customCategories.map((c) => String(c || "").trim()).filter(Boolean))]
     : [];
@@ -304,6 +520,7 @@ function normalizeImportedState(candidate) {
     time: item.time || "",
     title: String(item.title || ""),
     location: String(item.location || ""),
+    notes: String(item.notes || ""),
     category: normalizeCategory(item.category),
     currency: normalizeCurrency(item.currency),
     plannedUsd: Math.max(0, Number(item.plannedUsd) || 0),
@@ -314,6 +531,7 @@ function normalizeImportedState(candidate) {
   normalized.costItems = normalized.costItems.map((item) => ({
     id: item.id || makeId(),
     title: String(item.title || "Untitled Cost"),
+    notes: String(item.notes || ""),
     category: normalizeCategory(item.category),
     currency: normalizeCurrency(item.currency),
     plannedUsd: Math.max(0, Number(item.plannedUsd) || 0),
@@ -352,6 +570,84 @@ function money(value, currency = "USD") {
   }).format(Number(value) || 0);
 }
 
+function moneyRounded(value, currency = "USD") {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(Math.round(Number(value) || 0));
+}
+
+function normalizeDisplayCurrency(value) {
+  const raw = String(value || "").trim().toUpperCase();
+  if (raw === "CAD" || raw === "CDN") return "CAD";
+  if (raw === "EUR") return "EUR";
+  return "USD";
+}
+
+function displayCurrencyCode() {
+  return normalizeDisplayCurrency(state.settings?.displayCurrency || "USD");
+}
+
+function displayCurrencyLabel() {
+  return displayCurrencyCode();
+}
+
+function cadToDisplay(amountCad) {
+  const amount = Number(amountCad) || 0;
+  const code = displayCurrencyCode();
+  if (code === "CAD") return amount;
+  if (code === "USD") {
+    const rate = Number(state.settings?.usdToCadRate) || 1.36;
+    return rate > 0 ? amount / rate : 0;
+  }
+  if (code === "EUR") {
+    const rate = Number(state.settings?.eurToCadRate) || 1.47;
+    return rate > 0 ? amount / rate : 0;
+  }
+  return amount;
+}
+
+function displayToCad(amountDisplay, currencyCode = displayCurrencyCode()) {
+  const amount = Number(amountDisplay) || 0;
+  const code = normalizeDisplayCurrency(currencyCode);
+  if (code === "CAD") return amount;
+  if (code === "USD") return amount * (Number(state.settings?.usdToCadRate) || 1.36);
+  if (code === "EUR") return amount * (Number(state.settings?.eurToCadRate) || 1.47);
+  return amount;
+}
+
+function moneyDisplayFromCad(amountCad) {
+  return money(cadToDisplay(amountCad), displayCurrencyCode());
+}
+
+function moneyDisplayRoundedFromCad(amountCad) {
+  return moneyRounded(cadToDisplay(amountCad), displayCurrencyCode());
+}
+
+function numberDisplayRoundedFromCad(amountCad) {
+  return new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 0,
+  }).format(Math.round(cadToDisplay(amountCad) || 0));
+}
+
+function compactDisplayFromCad(amountCad) {
+  const displayValue = cadToDisplay(amountCad);
+  const v = Math.abs(displayValue);
+  const sign = displayValue < 0 ? "-" : "";
+  const code = displayCurrencyCode();
+  if (v >= 1000) {
+    const short = v >= 10000 ? (v / 1000).toFixed(0) : (v / 1000).toFixed(1);
+    const symbol =
+      new Intl.NumberFormat("en-US", { style: "currency", currency: code })
+        .formatToParts(1)
+        .find((part) => part.type === "currency")?.value || "";
+    return `${sign}${symbol}${short}k`;
+  }
+  return money(displayValue, code);
+}
+
 function compactCad(value) {
   const v = Math.abs(Number(value) || 0);
   const sign = Number(value) < 0 ? "-" : "";
@@ -360,6 +656,71 @@ function compactCad(value) {
     return `${sign}$${short}k`;
   }
   return `${sign}${money(v, "CAD").replace("CA", "")}`;
+}
+
+function loadStoredFormMode(key) {
+  const saved = String(localStorage.getItem(key) || "").toLowerCase();
+  return saved === "advanced" ? "advanced" : "basic";
+}
+
+function showToast(message) {
+  if (!el.appToast) return;
+  el.appToast.textContent = String(message || "");
+  el.appToast.hidden = false;
+  el.appToast.classList.add("visible");
+  if (uiState.toastTimer) {
+    clearTimeout(uiState.toastTimer);
+  }
+  uiState.toastTimer = setTimeout(() => {
+    el.appToast.classList.remove("visible");
+    el.appToast.hidden = true;
+    uiState.toastTimer = null;
+  }, 2200);
+}
+
+function setSegmentedButtonsState(buttons, mode) {
+  if (!buttons) return;
+  Object.entries(buttons).forEach(([key, button]) => {
+    if (!button) return;
+    const active = key === mode;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+}
+
+function applyFormMode(formEl, mode, buttons) {
+  if (!formEl) return;
+  const normalized = mode === "advanced" ? "advanced" : "basic";
+  formEl.dataset.uiMode = normalized;
+  formEl.querySelectorAll(".form-advanced-field").forEach((field) => {
+    field.hidden = normalized !== "advanced";
+  });
+  setSegmentedButtonsState(buttons, normalized);
+}
+
+function getItineraryFormUiMode() {
+  return loadStoredFormMode(ITIN_FORM_MODE_KEY);
+}
+
+function getCostFormUiMode() {
+  return loadStoredFormMode(COST_FORM_MODE_KEY);
+}
+
+function setItineraryFormUiMode(mode) {
+  const normalized = mode === "advanced" ? "advanced" : "basic";
+  localStorage.setItem(ITIN_FORM_MODE_KEY, normalized);
+  applyFormMode(el.activityForm, normalized, el.activityFormModeButtons);
+}
+
+function setCostFormUiMode(mode) {
+  const normalized = mode === "advanced" ? "advanced" : "basic";
+  localStorage.setItem(COST_FORM_MODE_KEY, normalized);
+  applyFormMode(el.costItemForm, normalized, el.costItemFormModeButtons);
+}
+
+function syncFormModes() {
+  setItineraryFormUiMode(getItineraryFormUiMode());
+  setCostFormUiMode(getCostFormUiMode());
 }
 
 function backupMeta() {
@@ -422,6 +783,207 @@ function renderBackupUi() {
     const title = dirty ? "Export JSON Backup (changes since last backup)" : "Export JSON Backup";
     el.globalSaveBtn.title = title;
     el.globalSaveBtn.setAttribute("aria-label", title);
+  }
+}
+
+function isSupportBannerDismissed() {
+  try {
+    return localStorage.getItem(SUPPORT_BANNER_DISMISSED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function hasSupportBannerShown() {
+  try {
+    return localStorage.getItem(SUPPORT_BANNER_SHOWN_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markSupportBannerShown() {
+  try {
+    localStorage.setItem(SUPPORT_BANNER_SHOWN_KEY, "1");
+  } catch {
+    // Ignore storage errors; banner will simply be less persistent.
+  }
+}
+
+function markSupportBannerDismissed() {
+  try {
+    localStorage.setItem(SUPPORT_BANNER_DISMISSED_KEY, "1");
+  } catch {
+    // Ignore storage errors; banner will simply be less persistent.
+  }
+}
+
+function maybeQueueSupportBannerAfterMeaningfulAction() {
+  if (!uiState.appReady) return;
+  if (isSupportBannerDismissed() || hasSupportBannerShown()) return;
+  uiState.supportBannerQueued = true;
+  renderSupportUi();
+}
+
+function renderSupportUi() {
+  if (!el.supportBanner) return;
+  const blockedByModal = uiState.importReminderOpen || uiState.dashboardDayModalOpen || uiState.aboutModalOpen;
+  const shouldShow =
+    uiState.appReady &&
+    uiState.supportBannerQueued &&
+    !blockedByModal &&
+    !isSupportBannerDismissed() &&
+    !hasSupportBannerShown();
+
+  el.supportBanner.hidden = !shouldShow;
+  uiState.supportBannerVisible = shouldShow;
+
+  if (shouldShow) {
+    markSupportBannerShown();
+    uiState.supportBannerQueued = false;
+  }
+}
+
+function dismissSupportBanner({ permanent = true } = {}) {
+  if (permanent) {
+    markSupportBannerDismissed();
+  }
+  uiState.supportBannerQueued = false;
+  uiState.supportBannerVisible = false;
+  if (el.supportBanner) el.supportBanner.hidden = true;
+}
+
+function getActiveModalElement() {
+  if (uiState.importReminderOpen && el.importReminderModal && !el.importReminderModal.hidden) return el.importReminderModal;
+  if (uiState.aboutModalOpen && el.aboutModal && !el.aboutModal.hidden) return el.aboutModal;
+  if (uiState.dashboardDayModalOpen && el.dashboardDayDetail && !el.dashboardDayDetail.hidden) return el.dashboardDayDetail;
+  return null;
+}
+
+function focusModalPrimaryAction(modalEl) {
+  if (!modalEl) return;
+  const target = modalEl.querySelector(
+    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  );
+  if (target instanceof HTMLElement) {
+    target.focus({ preventScroll: true });
+  }
+}
+
+function trapFocusInModal(event) {
+  if (event.key !== "Tab") return false;
+  const modalEl = getActiveModalElement();
+  if (!modalEl) return false;
+  const focusables = Array.from(
+    modalEl.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )
+  ).filter((node) => node instanceof HTMLElement && !node.hidden && node.offsetParent !== null);
+  if (!focusables.length) return false;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if (!(document.activeElement instanceof HTMLElement) || !modalEl.contains(document.activeElement)) {
+    event.preventDefault();
+    (event.shiftKey ? last : first).focus();
+    return true;
+  }
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+    return true;
+  }
+  if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+    return true;
+  }
+  return false;
+}
+
+function syncAboutModal() {
+  if (!el.aboutModal) return;
+  el.aboutModal.hidden = !uiState.aboutModalOpen;
+  syncBodyScrollLock();
+}
+
+function openAboutModal() {
+  uiState.aboutModalOpen = true;
+  syncAboutModal();
+  renderSupportUi();
+  requestAnimationFrame(() => focusModalPrimaryAction(el.aboutModal));
+}
+
+function closeAboutModal() {
+  uiState.aboutModalOpen = false;
+  syncAboutModal();
+  renderSupportUi();
+}
+
+function handleFamilyPrefsChange() {
+  familyPrefs.adults = Math.max(0, Number(el.familyAdults?.value) || 0);
+  familyPrefs.children = Math.max(0, Number(el.familyChildren?.value) || 0);
+  familyPrefs.splitByRole = Boolean(el.familySplitToggle?.checked);
+  saveFamilyPrefs();
+  state.settings.travelers = Math.max(1, familyPrefs.adults + familyPrefs.children || state.settings.travelers || 1);
+  saveState();
+  render();
+}
+
+function handleSettingsFamilyPrefsChange() {
+  familyPrefs.adults = Math.max(0, Number(el.settingsAdults?.value) || 0);
+  familyPrefs.children = Math.max(0, Number(el.settingsChildren?.value) || 0);
+  saveFamilyPrefs();
+  state.settings.travelers = Math.max(1, familyPrefs.adults + familyPrefs.children || state.settings.travelers || 1);
+  saveState();
+  render();
+}
+
+function syncFamilyPrefsFromTravelerCount(travelerCount) {
+  const total = Math.max(1, Number(travelerCount) || 1);
+  const currentAdults = Math.max(0, Number(familyPrefs.adults) || 0);
+  const currentChildren = Math.max(0, Number(familyPrefs.children) || 0);
+
+  if (currentAdults + currentChildren === total) return;
+
+  // Preserve the current child count when possible, and adjust adults to match the new total.
+  if (currentChildren > total) {
+    familyPrefs.children = total;
+    familyPrefs.adults = 0;
+  } else {
+    familyPrefs.children = currentChildren;
+    familyPrefs.adults = total - currentChildren;
+  }
+
+  saveFamilyPrefs();
+}
+
+function startPlanningFromHero() {
+  switchTab("itinerary");
+  showItineraryNewItemForm();
+  render();
+  requestAnimationFrame(() => el.activityInputs.title?.focus());
+}
+
+function loadSampleTripFromOnboarding() {
+  loadSampleTrip({ dismissOnboarding: true, targetTab: "dashboard", confirmReplace: true });
+}
+
+function startEmptyTripFromOnboarding() {
+  state = buildEmptyState();
+  localStorage.setItem(ONBOARDING_DISMISSED_KEY, "1");
+  uiState.onboardingVisible = false;
+  saveState();
+  switchTab("settings");
+  render();
+}
+
+function handleAboutModalClick(event) {
+  if (event.target === el.aboutModal || event.target.dataset.modalClose === "about") {
+    closeAboutModal();
+    return;
+  }
+  if (event.target.closest("#aboutModalClose")) {
+    closeAboutModal();
   }
 }
 
@@ -565,6 +1127,7 @@ function buildActivityFromInputs(inputs) {
     time: inputs.time.value,
     title: inputs.title.value.trim(),
     location: inputs.location.value.trim(),
+    notes: (inputs.notes?.value || "").trim(),
     category: inputs.category.value,
     currency: normalizeCurrency(inputs.currency.value),
     plannedUsd: Number(inputs.plannedUsd.value) || 0,
@@ -594,6 +1157,7 @@ function resetDashboardQuickForm({ preserveDate = true } = {}) {
 function resetActivityForm() {
   const inputs = el.activityInputs;
   el.activityForm.reset();
+  el.activityForm.hidden = true;
   inputs.mode.value = "add";
   inputs.editId.value = "";
   inputs.status.value = "Planned";
@@ -603,18 +1167,21 @@ function resetActivityForm() {
   uiState.itineraryEditId = null;
   el.activityFormTitle.textContent = "Add Itinerary Item";
   el.activityFormSubmit.textContent = "Add Activity";
+  el.activityFormCancelEdit.textContent = "Cancel";
   el.activityFormCancelEdit.hidden = true;
 }
 
 function setActivityFormEditMode(item) {
   const inputs = el.activityInputs;
   uiState.itineraryEditId = item.id;
+  uiState.itineraryFormPlacement = { type: "edit", id: item.id };
   inputs.mode.value = "edit";
   inputs.editId.value = item.id;
   inputs.date.value = item.date || "";
   inputs.time.value = item.time || "";
   inputs.title.value = item.title || "";
   inputs.location.value = item.location || "";
+  inputs.notes.value = item.notes || "";
   inputs.category.value = item.category || "Activities";
   inputs.currency.value = normalizeCurrency(item.currency || "USD");
   inputs.plannedUsd.value = String(Number(item.plannedUsd) || 0);
@@ -622,12 +1189,128 @@ function setActivityFormEditMode(item) {
   inputs.status.value = item.status || "Planned";
   el.activityFormTitle.textContent = "Edit Itinerary Item";
   el.activityFormSubmit.textContent = "Save Changes";
+  el.activityFormCancelEdit.textContent = "Cancel Edit";
   el.activityFormCancelEdit.hidden = false;
+}
+
+function showItineraryNewItemForm() {
+  uiState.itineraryFormPlacement = { type: "new" };
+  resetActivityForm();
+  uiState.itineraryFormPlacement = { type: "new" };
+  el.activityFormCancelEdit.textContent = "Cancel";
+  el.activityFormCancelEdit.hidden = false;
+}
+
+function hideItineraryInlineForm() {
+  uiState.itineraryFormPlacement = null;
+  uiState.itineraryEditId = null;
+  if (el.activityForm) el.activityForm.hidden = true;
+}
+
+function mountItineraryFormInline() {
+  const form = el.activityForm;
+  const list = el.itineraryList;
+  const composer = el.itineraryComposer;
+  if (!form || !list || !composer) return;
+  const placement = uiState.itineraryFormPlacement;
+  if (!placement) {
+    form.hidden = true;
+    return;
+  }
+
+  let slot = null;
+  if (placement.type === "new") {
+    slot = composer.querySelector('[data-inline-slot="new"]');
+  } else if (placement.type === "edit" && placement.id) {
+    slot = list.querySelector(`[data-inline-slot="edit"][data-item-id="${placement.id}"]`);
+  }
+  if (!slot) {
+    form.hidden = true;
+    return;
+  }
+  slot.appendChild(form);
+  form.hidden = false;
+}
+
+function renderItineraryList(summary) {
+  if (!el.itineraryComposer || !el.itineraryList) return;
+
+  el.itineraryComposer.innerHTML = `
+    <div class="day-detail-new itinerary-new">
+      <div class="day-detail-new-head">
+        <strong>New Itinerary Item</strong>
+        <button type="button" class="icon-btn" data-action="showItineraryNewItem">Add New Item</button>
+      </div>
+      <div class="day-detail-inline-slot" data-inline-slot="new"></div>
+    </div>
+  `;
+
+  el.itineraryList.innerHTML = summary.activities.length
+    ? summary.activities
+        .map(
+          (item) => `
+            <div class="itinerary-row">
+              <div class="itinerary-card">
+                <div class="itinerary-card-main">
+                  <div class="itinerary-card-head">
+                    <div class="itinerary-card-title-wrap">
+                      <span class="itinerary-card-date-title">${shortDate(item.date)} • ${item.time || "--:--"}</span>
+                      <strong>${escapeHtml(item.title)}</strong>
+                    </div>
+                    <span class="status-pill status-${item.status}">${item.status}</span>
+                  </div>
+                  <div class="itinerary-card-meta">
+                    <span>${escapeHtml(item.category)}</span>
+                    <span>${normalizeCurrency(item.currency)}</span>
+                  </div>
+                  <div class="itinerary-card-sub muted">${escapeHtml(item.location || "Location TBD")}</div>
+                  ${item.notes ? `<div class="itinerary-card-notes muted">${escapeHtml(item.notes)}</div>` : ""}
+                  <div class="itinerary-card-costs">
+                    <div><span class="muted">Forecast</span> ${formatEnteredMoney(item.plannedUsd, item.currency)} <span class="muted">(${money(amountToCad(item.plannedUsd, item.currency), "CAD")})</span></div>
+                    <div><span class="muted">Paid</span> ${formatEnteredMoney(item.paidUsd, item.currency)} <span class="muted">(${money(amountToCad(item.paidUsd, item.currency), "CAD")})</span></div>
+                  </div>
+                </div>
+                <div class="itinerary-card-actions">
+                  <button class="icon-btn" data-action="itineraryEditInline" data-id="${item.id}">Edit</button>
+                  <button class="icon-btn" data-action="markPaid" data-id="${item.id}">Mark Paid</button>
+                  <button class="icon-btn danger" data-action="delete" data-id="${item.id}">Delete</button>
+                </div>
+              </div>
+              <div class="day-detail-inline-slot" data-inline-slot="edit" data-item-id="${item.id}"></div>
+            </div>
+          `
+        )
+        .join("")
+    : renderActionEmptyState({
+        title: "No itinerary items yet",
+        body: "Add your first activity to start planning your trip timeline.",
+        actionPrefix: "itineraryEmpty",
+      });
+
+  if (uiState.itineraryFormPlacement?.type === "edit" && uiState.itineraryEditId) {
+    const active = summary.activities.find((item) => item.id === uiState.itineraryEditId);
+    if (active) {
+      setActivityFormEditMode(active);
+    } else {
+      resetActivityForm();
+      uiState.itineraryFormPlacement = null;
+    }
+  } else if (uiState.itineraryFormPlacement?.type === "new") {
+    resetActivityForm();
+    uiState.itineraryFormPlacement = { type: "new" };
+    el.activityFormCancelEdit.textContent = "Cancel";
+    el.activityFormCancelEdit.hidden = false;
+  } else {
+    hideItineraryInlineForm();
+  }
+
+  mountItineraryFormInline();
 }
 
 function resetCostItemForm() {
   const inputs = el.costItemInputs;
   el.costItemForm.reset();
+  el.costItemForm.hidden = true;
   inputs.mode.value = "add";
   inputs.editId.value = "";
   inputs.category.value = "Transportation";
@@ -635,18 +1318,22 @@ function resetCostItemForm() {
   inputs.paidUsd.value = "0";
   inputs.itineraryStatus.value = "Planned";
   uiState.costItemEditId = null;
+  uiState.costFormPlacement = null;
   el.costItemFormTitle.textContent = "Add Cost Item";
   el.costItemFormSubmit.textContent = "Add Cost Item";
+  el.costItemFormCancelEdit.textContent = "Cancel";
   el.costItemFormCancelEdit.hidden = true;
 }
 
 function setCostItemFormEditMode(item) {
   const inputs = el.costItemInputs;
   uiState.costItemEditId = item.id;
+  uiState.costFormPlacement = { type: "edit", id: item.id };
   inputs.mode.value = "edit";
   inputs.editId.value = item.id;
   inputs.title.value = item.title || "";
   inputs.category.value = item.category || "Misc";
+  inputs.notes.value = item.notes || "";
   inputs.currency.value = normalizeCurrency(item.currency || "USD");
   inputs.plannedUsd.value = String(Number(item.plannedUsd) || 0);
   inputs.paidUsd.value = String(Number(item.paidUsd) || 0);
@@ -657,12 +1344,126 @@ function setCostItemFormEditMode(item) {
   inputs.itineraryStatus.value = item.itineraryStatus || "Planned";
   el.costItemFormTitle.textContent = "Edit Cost Item";
   el.costItemFormSubmit.textContent = "Save Changes";
+  el.costItemFormCancelEdit.textContent = "Cancel Edit";
   el.costItemFormCancelEdit.hidden = false;
+}
+
+function showCostNewItemForm() {
+  uiState.costFormPlacement = { type: "new" };
+  resetCostItemForm();
+  uiState.costFormPlacement = { type: "new" };
+  el.costItemFormCancelEdit.textContent = "Cancel";
+  el.costItemFormCancelEdit.hidden = false;
+}
+
+function hideCostInlineForm() {
+  uiState.costFormPlacement = null;
+  uiState.costItemEditId = null;
+  if (el.costItemForm) el.costItemForm.hidden = true;
+}
+
+function mountCostFormInline() {
+  const form = el.costItemForm;
+  const list = el.costsList;
+  const composer = el.costsComposer;
+  if (!form || !list || !composer) return;
+  const placement = uiState.costFormPlacement;
+  if (!placement) {
+    form.hidden = true;
+    return;
+  }
+  let slot = null;
+  if (placement.type === "new") {
+    slot = composer.querySelector('[data-inline-slot="new"]');
+  } else if (placement.type === "edit" && placement.id) {
+    slot = list.querySelector(`[data-inline-slot="edit"][data-item-id="${placement.id}"]`);
+  }
+  if (!slot) {
+    form.hidden = true;
+    return;
+  }
+  slot.appendChild(form);
+  form.hidden = false;
+}
+
+function renderCostsList(summary) {
+  if (!el.costsComposer || !el.costsList) return;
+  el.costsComposer.innerHTML = `
+    <div class="day-detail-new itinerary-new">
+      <div class="day-detail-new-head">
+        <strong>New Cost Item</strong>
+        <button type="button" class="icon-btn" data-action="showCostNewItem">Add New Cost</button>
+      </div>
+      <div class="day-detail-inline-slot" data-inline-slot="new"></div>
+    </div>
+  `;
+
+  el.costsList.innerHTML = summary.costItems.length
+    ? summary.costItems
+        .map((item) => {
+          const itineraryMeta = item.includeInItinerary
+            ? `${shortDate(item.itineraryDate)}${item.itineraryTime ? ` • ${item.itineraryTime}` : ""}${item.itineraryLocation ? ` • ${item.itineraryLocation}` : ""}`
+            : "Not shown on itinerary";
+          return `
+            <div class="itinerary-row">
+              <div class="itinerary-card">
+                <div class="itinerary-card-main">
+                  <div class="itinerary-card-head">
+                    <div class="itinerary-card-title-wrap">
+                      <span class="itinerary-card-date-title">${item.includeInItinerary ? "Itinerary-linked cost" : "Additional cost item"}</span>
+                      <strong>${escapeHtml(item.title)}</strong>
+                    </div>
+                    <span class="status-pill status-${item.itineraryStatus || "Planned"}">${item.includeInItinerary ? (item.itineraryStatus || "Planned") : "Cost"}</span>
+                  </div>
+                  <div class="itinerary-card-meta">
+                    <span>${escapeHtml(item.category)}</span>
+                    <span>${normalizeCurrency(item.currency)}</span>
+                    <span>${item.includeInItinerary ? "On Itinerary" : "Not on Itinerary"}</span>
+                  </div>
+                  <div class="itinerary-card-sub muted">${escapeHtml(itineraryMeta)}</div>
+                  ${item.notes ? `<div class="itinerary-card-notes muted">${escapeHtml(item.notes)}</div>` : ""}
+                  <div class="itinerary-card-costs">
+                    <div><span class="muted">Forecast</span> ${formatEnteredMoney(item.plannedUsd, item.currency)} <span class="muted">(${money(amountToCad(item.plannedUsd, item.currency), "CAD")})</span></div>
+                    <div><span class="muted">Paid</span> ${formatEnteredMoney(item.paidUsd, item.currency)} <span class="muted">(${money(amountToCad(item.paidUsd, item.currency), "CAD")})</span></div>
+                  </div>
+                </div>
+                <div class="itinerary-card-actions">
+                  <button class="icon-btn" data-action="costEditInline" data-id="${item.id}">Edit</button>
+                  <button class="icon-btn" data-action="markCostItemPaid" data-id="${item.id}">Mark Paid</button>
+                  <button class="icon-btn danger" data-action="deleteCostItem" data-id="${item.id}">Delete</button>
+                </div>
+              </div>
+              <div class="day-detail-inline-slot" data-inline-slot="edit" data-item-id="${item.id}"></div>
+            </div>
+          `;
+        })
+        .join("")
+    : `<div class="itinerary-empty muted">No cost items yet. Add one to track non-itinerary expenses and shared trip costs.</div>`;
+
+  if (uiState.costFormPlacement?.type === "edit" && uiState.costItemEditId) {
+    const active = summary.costItems.find((item) => item.id === uiState.costItemEditId);
+    if (active) {
+      setCostItemFormEditMode(active);
+    } else {
+      resetCostItemForm();
+      uiState.costFormPlacement = null;
+    }
+  } else if (uiState.costFormPlacement?.type === "new") {
+    resetCostItemForm();
+    uiState.costFormPlacement = { type: "new" };
+    el.costItemFormCancelEdit.textContent = "Cancel";
+    el.costItemFormCancelEdit.hidden = false;
+  } else {
+    hideCostInlineForm();
+  }
+
+  mountCostFormInline();
 }
 
 function setDashboardQuickFormEditMode(entry) {
   const inputs = el.dashboardQuickActivityInputs;
   uiState.dashboardQuickEdit = { source: entry.source, id: entry.id };
+  uiState.dashboardQuickPlacement = { type: "edit", source: entry.source, id: entry.id };
   inputs.mode.value = "edit";
   inputs.editSource.value = entry.source;
   inputs.editId.value = entry.id;
@@ -670,6 +1471,7 @@ function setDashboardQuickFormEditMode(entry) {
   inputs.time.value = entry.time || "";
   inputs.title.value = entry.title || "";
   inputs.location.value = entry.location || "";
+  inputs.notes.value = entry.notes || "";
   inputs.category.value = entry.category || "Activities";
   inputs.currency.value = normalizeCurrency(entry.currency || "USD");
   inputs.plannedUsd.value = String(Number(entry.plannedUsd) || 0);
@@ -678,6 +1480,49 @@ function setDashboardQuickFormEditMode(entry) {
   el.dashboardQuickFormTitle.textContent = `Edit ${entry.source === "costItem" ? "Cost Item" : "Itinerary Item"}`;
   el.dashboardQuickFormSubmit.textContent = "Save Changes";
   el.dashboardQuickFormCancelEdit.hidden = false;
+}
+
+function showDashboardQuickNewItemForm() {
+  uiState.dashboardQuickPlacement = { type: "new" };
+  resetDashboardQuickForm({ preserveDate: true });
+  uiState.dashboardQuickPlacement = { type: "new" };
+}
+
+function hideDashboardQuickInlineForm() {
+  uiState.dashboardQuickPlacement = null;
+  uiState.dashboardQuickEdit = null;
+  el.dashboardQuickActivityForm.hidden = true;
+}
+
+function mountDashboardQuickFormInline() {
+  const form = el.dashboardQuickActivityForm;
+  const composer = el.dashboardDayDetailComposer;
+  const list = el.dashboardDayDetailList;
+  if (!form || !composer || !list) return;
+
+  const placement = uiState.dashboardQuickPlacement;
+  if (!uiState.dashboardDayModalOpen || !uiState.dashboardSelectedDate || !placement) {
+    form.hidden = true;
+    return;
+  }
+
+  let slot = null;
+  if (placement.type === "new") {
+    slot = composer.querySelector('[data-inline-slot="new"]');
+  } else if (placement.type === "edit" && placement.source && placement.id) {
+    slot = list.querySelector(
+      `[data-inline-slot="edit"][data-source="${placement.source}"][data-item-id="${placement.id}"]`
+    );
+  }
+
+  if (!slot) {
+    form.hidden = true;
+    return;
+  }
+
+  slot.appendChild(form);
+  form.hidden = false;
+  form.classList.remove("disabled");
 }
 
 function daysBetweenInclusive(start, end) {
@@ -798,9 +1643,10 @@ function renderCompactDashboardTimeline(summary) {
             item.time ? `Time: ${item.time}` : "Time: Unscheduled",
             `Category: ${item.category}`,
             `Status: ${item.status}`,
-            `Planned: ${formatEnteredMoney(item.plannedUsd, item.currency)} (${money(amountToCad(item.plannedUsd, item.currency), "CAD")})`,
+            `Forecast: ${formatEnteredMoney(item.plannedUsd, item.currency)} (${money(amountToCad(item.plannedUsd, item.currency), "CAD")})`,
             `Paid: ${formatEnteredMoney(item.paidUsd, item.currency)} (${money(amountToCad(item.paidUsd, item.currency), "CAD")})`,
             item.location ? `Location: ${item.location}` : "",
+            item.notes ? `Notes: ${item.notes}` : "",
             item.source === "costItem" ? "Cost Item" : "Activity",
           ]
             .filter(Boolean)
@@ -860,8 +1706,10 @@ function renderDashboardDayDetail(summary) {
     el.dashboardDayDetailTitle.textContent = "Select a Day";
     el.dashboardDayDetailMeta.textContent = "Click a day in the timeline to view items and add a new itinerary item.";
     el.dashboardDayDetailList.innerHTML = "";
+    el.dashboardDayDetailComposer.innerHTML = "";
     el.dashboardQuickActivityForm.classList.add("disabled");
     resetDashboardQuickForm({ preserveDate: false });
+    hideDashboardQuickInlineForm();
     return;
   }
   el.dashboardDayDetail.hidden = false;
@@ -881,34 +1729,53 @@ function renderDashboardDayDetail(summary) {
     ? items
         .map(
           (item) => `
-            <div class="day-detail-item">
-              <div class="day-detail-main">
-                <strong>${escapeHtml(item.title)}</strong>
-                <span>${item.time || "--:--"} • ${escapeHtml(item.category)} • ${escapeHtml(item.status)}${item.source === "costItem" ? " • Cost Item" : ""}</span>
-                <span class="muted">${escapeHtml(item.location || "Location TBD")}</span>
+            <div class="day-detail-row">
+              <div class="day-detail-item">
+                <div class="day-detail-main">
+                  <strong>${escapeHtml(item.title)}</strong>
+                  <span>${item.time || "--:--"} • ${escapeHtml(item.category)} • ${escapeHtml(item.status)}${item.source === "costItem" ? " • Cost Item" : ""}</span>
+                  <span class="muted">${escapeHtml(item.location || "Location TBD")}</span>
+                  ${item.notes ? `<span class="muted">${escapeHtml(item.notes)}</span>` : ""}
+                </div>
+                <div class="day-detail-cost">
+                  <strong>${money(amountToCad(item.plannedUsd, item.currency), "CAD")}</strong>
+                  <span class="muted">${money(amountToCad(item.paidUsd, item.currency), "CAD")} paid</span>
+                  <button type="button" class="icon-btn" data-action="editDashboardItem" data-source="${item.source}" data-id="${item.id}">Edit</button>
+                </div>
               </div>
-              <div class="day-detail-cost">
-                <strong>${money(amountToCad(item.plannedUsd, item.currency), "CAD")}</strong>
-                <span class="muted">${money(amountToCad(item.paidUsd, item.currency), "CAD")} paid</span>
-                <button type="button" class="icon-btn" data-action="editDashboardItem" data-source="${item.source}" data-id="${item.id}">Edit</button>
-              </div>
+              <div class="day-detail-inline-slot" data-inline-slot="edit" data-source="${item.source}" data-item-id="${item.id}"></div>
             </div>
           `
         )
         .join("")
     : `<p class="muted">No items for this day yet. Add one below.</p>`;
 
-  el.dashboardQuickActivityForm.classList.remove("disabled");
-  if (uiState.dashboardQuickEdit) {
+  el.dashboardDayDetailComposer.innerHTML = `
+    <div class="day-detail-new">
+      <div class="day-detail-new-head">
+        <strong>New Item</strong>
+        <button type="button" class="icon-btn" data-action="showDashboardNewItem">Add New Item</button>
+      </div>
+      <div class="day-detail-inline-slot" data-inline-slot="new"></div>
+    </div>
+  `;
+
+  if (uiState.dashboardQuickPlacement?.type === "edit" && uiState.dashboardQuickEdit) {
     const active = items.find((item) => item.id === uiState.dashboardQuickEdit.id && item.source === uiState.dashboardQuickEdit.source);
     if (active) {
       setDashboardQuickFormEditMode(active);
     } else {
       resetDashboardQuickForm({ preserveDate: true });
+      uiState.dashboardQuickPlacement = null;
     }
-  } else {
+  } else if (uiState.dashboardQuickPlacement?.type === "new") {
     resetDashboardQuickForm({ preserveDate: true });
+    uiState.dashboardQuickPlacement = { type: "new" };
+  } else {
+    hideDashboardQuickInlineForm();
   }
+
+  mountDashboardQuickFormInline();
 }
 
 function getSortedActivities() {
@@ -927,6 +1794,7 @@ function getItineraryEntries(activities, costItems) {
     time: item.time || "",
     title: item.title,
     location: item.location || "",
+    notes: item.notes || "",
     category: item.category,
     currency: normalizeCurrency(item.currency),
     status: item.status,
@@ -943,6 +1811,7 @@ function getItineraryEntries(activities, costItems) {
       time: item.itineraryTime || "",
       title: item.title,
       location: item.itineraryLocation || "",
+      notes: item.notes || "",
       category: item.category,
       currency: normalizeCurrency(item.currency),
       status: item.itineraryStatus || "Planned",
@@ -988,6 +1857,24 @@ function calculateSummary() {
   const paidCad = totals.paidCadTotal;
   const outstandingCad = plannedCad - paidCad;
   const remainingCad = budgetCad - plannedCad;
+  const adults = Math.max(0, Number(familyPrefs.adults) || 0);
+  const children = Math.max(0, Number(familyPrefs.children) || 0);
+  const totalTravelers = adults + children;
+  const safeDiv = (value, divisor) => (divisor > 0 ? value / divisor : 0);
+  const familySummary = {
+    adults,
+    children,
+    totalTravelers,
+    plannedCad,
+    paidCad,
+    perPersonPlannedCad: safeDiv(plannedCad, totalTravelers),
+    perPersonPaidCad: safeDiv(paidCad, totalTravelers),
+    perAdultPlannedCad: safeDiv(plannedCad, adults),
+    perAdultPaidCad: safeDiv(paidCad, adults),
+    perChildPlannedCad: safeDiv(plannedCad, children),
+    perChildPaidCad: safeDiv(paidCad, children),
+    showSplitByRole: Boolean(familyPrefs.splitByRole),
+  };
 
   return {
     activities,
@@ -1000,6 +1887,7 @@ function calculateSummary() {
     paidCad,
     outstandingCad,
     remainingCad,
+    familySummary,
     tripDays: daysBetweenInclusive(state.settings.startDate, state.settings.endDate),
   };
 }
@@ -1007,56 +1895,215 @@ function calculateSummary() {
 function syncSettingsInputs() {
   Object.entries(el.settings).forEach(([key, input]) => {
     if (document.activeElement === input) return;
+    if (key === "totalBudgetCad") return;
     input.value = state.settings[key] ?? "";
   });
+  if (el.settings.totalBudgetCad && document.activeElement !== el.settings.totalBudgetCad) {
+    const displayBudget = cadToDisplay(state.settings.totalBudgetCad || 0);
+    el.settings.totalBudgetCad.value = Number.isFinite(displayBudget) ? String(Number(displayBudget.toFixed(2))) : "0";
+  }
+  if (el.totalBudgetLabelText) {
+    el.totalBudgetLabelText.textContent = "Total Budget";
+  }
+  if (el.settingsAdults && document.activeElement !== el.settingsAdults) {
+    el.settingsAdults.value = String(Math.max(0, Number(familyPrefs.adults) || 0));
+  }
+  if (el.settingsChildren && document.activeElement !== el.settingsChildren) {
+    el.settingsChildren.value = String(Math.max(0, Number(familyPrefs.children) || 0));
+  }
+}
+
+function renderTripSnapshot(summary) {
+  if (!el.tripSnapshotGrid) return;
+  const currencyLabel = displayCurrencyLabel();
+  const hasAnyCosts = Number(summary.plannedCad) > 0 || Number(summary.paidCad) > 0;
+  const hasDates = Boolean(summary.tripDays);
+  const hasActivities = (summary.activities || []).length > 0;
+  const travelerCount = Number(summary.familySummary?.totalTravelers) || 0;
+  const hasCostPerPerson = hasAnyCosts && travelerCount > 0;
+
+  const snapshotItems = [
+    {
+      label: "Total Planned",
+      currency: currencyLabel,
+      value: hasAnyCosts ? numberDisplayRoundedFromCad(summary.plannedCad) : "—",
+      sub: hasAnyCosts ? "Forecast total (all items)" : "Add costs to calculate",
+    },
+    {
+      label: "Total Paid",
+      currency: currencyLabel,
+      value: hasAnyCosts ? numberDisplayRoundedFromCad(summary.paidCad) : "—",
+      sub: hasAnyCosts ? "Paid total (all items)" : "Add costs to calculate",
+    },
+    {
+      label: "Cost / Person",
+      currency: currencyLabel,
+      value: hasCostPerPerson ? numberDisplayRoundedFromCad(summary.familySummary.perPersonPlannedCad) : "—",
+      sub: travelerCount <= 0 ? "Set travelers" : hasAnyCosts ? "Uses adults + kids" : "Add costs to calculate",
+    },
+    {
+      label: "Trip Days",
+      value: hasDates ? `${summary.tripDays} day${summary.tripDays === 1 ? "" : "s"}` : "—",
+      sub: hasDates ? "Includes start + end" : "Set dates",
+      title: "Trip length includes both the start and end dates.",
+    },
+    {
+      label: "Activities",
+      value: String((summary.activities || []).length || 0),
+      sub: hasActivities ? "Itinerary items" : "Add your first activity",
+    },
+  ];
+
+  el.tripSnapshotGrid.innerHTML = snapshotItems
+    .map(
+      (item) => `
+        <article class="trip-snapshot-item"${item.title ? ` title="${escapeHtml(item.title)}"` : ""}>
+          <p class="label">${item.label}${item.currency ? ` <span class="currency-note">${item.currency}</span>` : ""}</p>
+          <p class="value">${item.value}</p>
+          <p class="sub">${item.sub}</p>
+        </article>
+      `
+    )
+    .join("");
+}
+
+function hasMeaningfulTripData() {
+  const s = state.settings || {};
+  return Boolean(
+    (s.tripName || "").trim() ||
+      s.startDate ||
+      s.endDate ||
+      (Number(s.totalBudgetCad) || 0) > 0 ||
+      (state.activities || []).length ||
+      (state.costItems || []).length
+  );
+}
+
+function isCurrentTripDemoLike() {
+  return (
+    state?.settings?.tripName === demoData.settings.tripName &&
+    (state.activities || []).length === demoData.activities.length &&
+    (state.costItems || []).length === demoData.costItems.length
+  );
+}
+
+function confirmExampleReplaceIfNeeded() {
+  if (!hasMeaningfulTripData()) return true;
+  if (isCurrentTripDemoLike()) return true;
+  return window.confirm("Loading the example will replace your current trip data. Continue?");
+}
+
+function loadSampleTrip({ dismissOnboarding = false, targetTab = "dashboard", confirmReplace = true } = {}) {
+  if (confirmReplace && !confirmExampleReplaceIfNeeded()) return false;
+  state = normalizeImportedState(demoData);
+  familyPrefs = { adults: 2, children: 2, splitByRole: true };
+  saveFamilyPrefs();
+  if (dismissOnboarding) {
+    localStorage.setItem(ONBOARDING_DISMISSED_KEY, "1");
+    uiState.onboardingVisible = false;
+  }
+  saveState();
+  switchTab(targetTab);
+  render();
+  return true;
+}
+
+function startFirstActivityFromEmptyState() {
+  switchTab("itinerary");
+  showItineraryNewItemForm();
+  render();
+  requestAnimationFrame(() => el.activityInputs.title?.focus());
+}
+
+function renderActionEmptyState({ title, body, actionPrefix = "emptyState" }) {
+  return `
+    <div class="action-empty-state" role="status">
+      <strong>${escapeHtml(title)}</strong>
+      <p class="muted">${escapeHtml(body)}</p>
+      <p class="muted small-copy">Start small — add flights, hotel, and one activity.</p>
+      <div class="action-empty-buttons">
+        <button type="button" class="btn btn-primary" data-action="${actionPrefix}AddFirstActivity">Add your first activity</button>
+        <button type="button" class="btn btn-secondary control-btn" data-action="${actionPrefix}LoadExample">Load example trip</button>
+      </div>
+    </div>
+  `;
+}
+
+function handleEmptyStateAction(action) {
+  if (action.endsWith("AddFirstActivity")) {
+    startFirstActivityFromEmptyState();
+    return true;
+  }
+  if (action.endsWith("LoadExample")) {
+    loadSampleTrip({ dismissOnboarding: true, targetTab: "dashboard", confirmReplace: true });
+    return true;
+  }
+  return false;
+}
+
+function renderFamilyBudgetSummary(summary) {
+  if (el.familyAdults) el.familyAdults.value = String(Math.max(0, Number(familyPrefs.adults) || 0));
+  if (el.familyChildren) el.familyChildren.value = String(Math.max(0, Number(familyPrefs.children) || 0));
+  if (el.familySplitToggle) el.familySplitToggle.checked = Boolean(familyPrefs.splitByRole);
+  if (!el.familyBudgetSummary) return;
+
+  const f = summary.familySummary;
+  const familyOutstandingCad = Math.max(0, f.plannedCad - f.paidCad);
+  const stats = [
+    ["Per traveler (forecast)", f.totalTravelers ? money(f.perPersonPlannedCad, "CAD") : "—"],
+    ["Per traveler (left to pay)", f.totalTravelers ? money(familyOutstandingCad / f.totalTravelers, "CAD") : "—"],
+  ];
+
+  if (f.showSplitByRole) {
+    stats.push(["Per adult (forecast)", f.adults ? money(f.perAdultPlannedCad, "CAD") : "—"]);
+    stats.push(["Per adult (left to pay)", f.adults ? money(Math.max(0, f.perAdultPlannedCad - f.perAdultPaidCad), "CAD") : "—"]);
+    stats.push(["Per child (forecast)", f.children ? money(f.perChildPlannedCad, "CAD") : "—"]);
+    stats.push(["Per child (left to pay)", f.children ? money(Math.max(0, f.perChildPlannedCad - f.perChildPaidCad), "CAD") : "—"]);
+  }
+
+  const totalsLine = `
+    <div class="family-budget-totals">
+      <span><strong>Travelers:</strong> ${f.totalTravelers} (${f.adults} adult${f.adults === 1 ? "" : "s"}, ${f.children} child${f.children === 1 ? "" : "ren"})</span>
+      <span><strong>Paid so far:</strong> ${money(f.paidCad, "CAD")} of forecast ${money(f.plannedCad, "CAD")}</span>
+      <span><strong>Left to pay:</strong> ${money(familyOutstandingCad, "CAD")}</span>
+    </div>
+  `;
+
+  const cards = stats
+    .map(
+      ([label, value]) => `
+        <div class="family-stat">
+          <div class="label">${label}</div>
+          <div class="value">${value}</div>
+        </div>
+      `
+    )
+    .join("");
+
+  el.familyBudgetSummary.innerHTML = `${totalsLine}<div class="family-budget-cards">${cards}</div>`;
+}
+
+function renderOnboardingPanel() {
+  uiState.onboardingVisible = !isOnboardingDismissed();
+  syncOnboardingPanelVisibility();
 }
 
 function renderDashboard(summary) {
   const s = state.settings;
   const days = summary.tripDays ? `${summary.tripDays} day${summary.tripDays === 1 ? "" : "s"}` : "Dates TBD";
-  el.heroTripTitle.textContent = s.tripName || "Trip Dashboard & Timeline";
+  const travelerCount = summary.familySummary.totalTravelers || s.travelers || 1;
+  el.heroTripTitle.textContent = "Plan your family vacation without spreadsheets.";
   el.dashboardTripTitle.textContent = s.tripName || "Trip";
-  el.dashboardTripMeta.textContent = `${shortDate(s.startDate)} to ${shortDate(s.endDate)} • ${s.travelers || 1} traveler(s) • ${days}`;
+  el.dashboardTripMeta.textContent = `${shortDate(s.startDate)} to ${shortDate(s.endDate)} • ${travelerCount} traveler(s) • ${days}`;
+  if (el.dashboardCategoryBreakdownTitle) {
+    el.dashboardCategoryBreakdownTitle.textContent = `Category Breakdown (Forecast • ${displayCurrencyLabel()})`;
+  }
+  renderOnboardingPanel();
 
-  const metrics = [
-    {
-      label: "Total Budget (CDN)",
-      value: money(summary.budgetCad, "CAD"),
-      sub: "Editable in Trip Settings",
-    },
-    {
-      label: "Planned Cost (CDN)",
-      value: money(summary.plannedCad, "CAD"),
-      sub: "Mixed currencies converted to CDN",
-    },
-    {
-      label: "Paid Cost (CDN)",
-      value: money(summary.paidCad, "CAD"),
-      sub: "Mixed currencies converted to CDN",
-    },
-    {
-      label: "Outstanding (CDN)",
-      value: money(summary.outstandingCad, "CAD"),
-      sub: `Planned - Paid`,
-    },
-    {
-      label: "Remaining vs Budget",
-      value: money(summary.remainingCad, "CAD"),
-      sub: summary.remainingCad < 0 ? "Over budget (planned)" : "Available budget",
-    },
-  ];
-
-  el.metricGrid.innerHTML = metrics
-    .map(
-      (metric) => `
-        <article class="metric-card">
-          <p class="label">${metric.label}</p>
-          <p class="value">${metric.value}</p>
-          <p class="sub">${metric.sub}</p>
-        </article>
-      `
-    )
-    .join("");
+  if (el.metricGrid) {
+    el.metricGrid.innerHTML = "";
+    el.metricGrid.hidden = true;
+  }
 
   const categories = Object.entries(summary.byCategory)
     .sort((a, b) => b[1].plannedCad - a[1].plannedCad);
@@ -1080,9 +2127,19 @@ function renderDashboard(summary) {
           };
         });
 
-        const gradient = segments
-          .map((seg) => `${seg.color} ${seg.start.toFixed(2)}% ${seg.end.toFixed(2)}%`)
-          .join(", ");
+        const donutRadius = 48;
+        const donutStroke = 24;
+        const donutSize = 120;
+        const circumference = 2 * Math.PI * donutRadius;
+        const svgSegments = segments
+          .map((seg) => {
+            const fraction = Math.max(0, seg.share) / 100;
+            if (fraction <= 0) return "";
+            const dash = Math.max(0, fraction * circumference);
+            const offset = -(Math.max(0, seg.start) / 100) * circumference;
+            return `<circle cx="${donutSize / 2}" cy="${donutSize / 2}" r="${donutRadius}" fill="none" stroke="${seg.color}" stroke-width="${donutStroke}" stroke-linecap="butt" stroke-dasharray="${dash} ${Math.max(0, circumference - dash)}" stroke-dashoffset="${offset}"></circle>`;
+          })
+          .join("");
 
         const legend = segments
           .map(
@@ -1090,7 +2147,7 @@ function renderDashboard(summary) {
               <div class="donut-legend-row">
                 <span class="swatch" style="background:${seg.color}"></span>
                 <span class="legend-name">${escapeHtml(seg.name)}</span>
-                <span class="legend-value">${money(seg.data.plannedCad, "CAD")}</span>
+                <span class="legend-value">${moneyDisplayFromCad(seg.data.plannedCad)}</span>
                 <span class="legend-pct">${seg.share.toFixed(0)}%</span>
               </div>
             `
@@ -1100,11 +2157,15 @@ function renderDashboard(summary) {
         return `
           <div class="donut-breakdown">
             <div class="donut-wrap">
-              <div class="donut-chart" style="background: conic-gradient(${gradient});">
+              <div class="donut-chart" aria-label="Forecast category breakdown donut chart">
+                <svg class="donut-svg" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+                  <circle cx="60" cy="60" r="${donutRadius}" fill="none" stroke="#edf2fb" stroke-width="${donutStroke}"></circle>
+                  ${svgSegments}
+                </svg>
                 <div class="donut-hole">
-                  <span class="donut-label">Planned</span>
-                  <strong>${compactCad(summary.plannedCad)}</strong>
-                  <small class="donut-note">CDN</small>
+                  <span class="donut-label">Forecast</span>
+                  <strong>${compactDisplayFromCad(summary.plannedCad)}</strong>
+                  <small class="donut-note">${displayCurrencyLabel()}</small>
                 </div>
               </div>
             </div>
@@ -1112,7 +2173,11 @@ function renderDashboard(summary) {
           </div>
         `;
       })()
-    : `<p class="muted">Add activities or cost items to see a category breakdown.</p>`;
+    : renderActionEmptyState({
+        title: "No budget breakdown yet",
+        body: "Add activities or cost items to see your category breakdown.",
+        actionPrefix: "budgetEmpty",
+      });
 
   const plannedPct = summary.budgetCad > 0 ? (summary.plannedCad / summary.budgetCad) * 100 : 0;
   const paidPct = summary.budgetCad > 0 ? (summary.paidCad / summary.budgetCad) * 100 : 0;
@@ -1181,20 +2246,21 @@ function renderCostItemsTable(summary) {
 
 function renderReport(summary) {
   const s = state.settings;
+  const travelerCount = summary.familySummary.totalTravelers || s.travelers || 1;
   el.reportTripName.textContent = s.tripName || "Vacation";
   const days = summary.tripDays ? `${summary.tripDays} day${summary.tripDays === 1 ? "" : "s"}` : "Dates TBD";
-  el.reportTripMeta.textContent = `${shortDate(s.startDate)} to ${shortDate(s.endDate)} • ${s.travelers || 1} traveler(s) • ${days}`;
-  el.reportRate.textContent = `1 USD = ${(Number(s.usdToCadRate) || 0).toFixed(4)} CAD`;
+  el.reportTripMeta.textContent = `${shortDate(s.startDate)} to ${shortDate(s.endDate)} • ${travelerCount} traveler(s) • ${days}`;
+  el.reportRate.textContent = `Display: ${displayCurrencyLabel()} • 1 USD = ${(Number(s.usdToCadRate) || 0).toFixed(4)} CAD • 1 EUR = ${(Number(s.eurToCadRate) || 0).toFixed(4)} CAD`;
   el.reportGenerated.textContent = new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date());
 
   const reportMetrics = [
-    ["Budget (CDN)", money(summary.budgetCad, "CAD")],
-    ["Planned (CDN)", money(summary.plannedCad, "CAD")],
-    ["Paid (CDN)", money(summary.paidCad, "CAD")],
-    ["Outstanding (CDN)", money(summary.outstandingCad, "CAD")],
+    [`Budget (${displayCurrencyLabel()})`, moneyDisplayFromCad(summary.budgetCad)],
+    [`Forecast (${displayCurrencyLabel()})`, moneyDisplayFromCad(summary.plannedCad)],
+    [`Paid (${displayCurrencyLabel()})`, moneyDisplayFromCad(summary.paidCad)],
+    [`Outstanding (${displayCurrencyLabel()})`, moneyDisplayFromCad(summary.outstandingCad)],
   ];
 
   el.reportMetrics.innerHTML = reportMetrics
@@ -1208,13 +2274,50 @@ function renderReport(summary) {
     )
     .join("");
 
+  if (el.reportFamilySummary) {
+    const f = summary.familySummary;
+    const familyRows = [
+      ["Adults", String(f.adults)],
+      ["Children", String(f.children)],
+      ["Total travelers", String(f.totalTravelers)],
+      ["Total forecasted cost", moneyDisplayFromCad(f.plannedCad)],
+      ["Total paid cost", moneyDisplayFromCad(f.paidCad)],
+      ["Forecast per person", f.totalTravelers ? moneyDisplayFromCad(f.perPersonPlannedCad) : "—"],
+      ["Paid per person", f.totalTravelers ? moneyDisplayFromCad(f.perPersonPaidCad) : "—"],
+    ];
+    if (f.showSplitByRole) {
+      familyRows.push(["Forecast per adult", f.adults ? moneyDisplayFromCad(f.perAdultPlannedCad) : "—"]);
+      familyRows.push(["Paid per adult", f.adults ? moneyDisplayFromCad(f.perAdultPaidCad) : "—"]);
+      familyRows.push(["Forecast per child", f.children ? moneyDisplayFromCad(f.perChildPlannedCad) : "—"]);
+      familyRows.push(["Paid per child", f.children ? moneyDisplayFromCad(f.perChildPaidCad) : "—"]);
+    }
+    el.reportFamilySummary.innerHTML = `
+      <div class="report-table">
+        <div class="report-table-row header two-col">
+          <div>Metric</div>
+          <div>Value</div>
+        </div>
+        ${familyRows
+          .map(
+            ([label, value]) => `
+              <div class="report-table-row two-col">
+                <div>${label}</div>
+                <div>${value}</div>
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    `;
+  }
+
   const breakdownRows = Object.entries(summary.byCategory).sort((a, b) => b[1].plannedCad - a[1].plannedCad);
   el.reportBreakdown.innerHTML = `
     <div class="report-table">
       <div class="report-table-row header">
         <div>Category</div>
-        <div>Planned (CDN)</div>
-        <div>Paid (CDN)</div>
+        <div>Forecast (${displayCurrencyLabel()})</div>
+        <div>Paid (${displayCurrencyLabel()})</div>
         <div>Paid %</div>
       </div>
       ${
@@ -1225,8 +2328,8 @@ function renderReport(summary) {
                 return `
                   <div class="report-table-row">
                     <div>${escapeHtml(category)}</div>
-                    <div>${money(data.plannedCad, "CAD")}</div>
-                    <div>${money(data.paidCad, "CAD")}</div>
+                    <div>${moneyDisplayFromCad(data.plannedCad)}</div>
+                    <div>${moneyDisplayFromCad(data.paidCad)}</div>
                     <div>${pct.toFixed(0)}%</div>
                   </div>
                 `;
@@ -1246,9 +2349,10 @@ function renderReport(summary) {
               <div class="timeline-main">
                 <h5>${escapeHtml(item.title)}</h5>
                 <p>${escapeHtml(item.location || "Location TBD")} • ${escapeHtml(item.category)} • ${escapeHtml(item.status)}${item.source === "costItem" ? " • Cost Item" : ""}</p>
+                ${item.notes ? `<p class="muted">${escapeHtml(item.notes)}</p>` : ""}
               </div>
               <div class="timeline-cost">
-                <strong>Planned ${formatEnteredMoney(item.plannedUsd, item.currency)}</strong>
+                <strong>Forecast ${formatEnteredMoney(item.plannedUsd, item.currency)}</strong>
                 <span>Paid ${formatEnteredMoney(item.paidUsd, item.currency)}</span>
                 <span class="muted">${money(amountToCad(item.plannedUsd, item.currency), "CAD")} planned</span>
               </div>
@@ -1262,22 +2366,34 @@ function renderReport(summary) {
 function render() {
   refreshCategorySelectOptions();
   syncSettingsInputs();
+  syncFormModes();
   const summary = calculateSummary();
+  renderTripSnapshot(summary);
   renderDashboard(summary);
+  renderItineraryList(summary);
+  renderCostsList(summary);
   renderActivitiesTable(summary);
   renderCostItemsTable(summary);
   renderReport(summary);
   renderBackupUi();
   syncImportReminderModal();
+  syncAboutModal();
+  syncBodyScrollLock();
+  renderSupportUi();
 }
 
 function updateSettingsFromInputs() {
+  const budgetFieldCurrency = displayCurrencyCode();
+  const nextDisplayCurrency = normalizeDisplayCurrency(el.settings.displayCurrency?.value || budgetFieldCurrency);
   state.settings.tripName = el.settings.tripName.value;
   state.settings.travelers = Number(el.settings.travelers.value) || 1;
   state.settings.startDate = el.settings.startDate.value;
   state.settings.endDate = el.settings.endDate.value;
-  state.settings.totalBudgetCad = Number(el.settings.totalBudgetCad.value) || 0;
   state.settings.usdToCadRate = Number(el.settings.usdToCadRate.value) || 0;
+  state.settings.eurToCadRate = Number(el.settings.eurToCadRate?.value) || 0;
+  state.settings.totalBudgetCad = Math.max(0, displayToCad(el.settings.totalBudgetCad.value, budgetFieldCurrency));
+  state.settings.displayCurrency = nextDisplayCurrency;
+  syncFamilyPrefsFromTravelerCount(state.settings.travelers);
   saveState();
   render();
 }
@@ -1296,6 +2412,7 @@ function addActivity(event) {
     item.time = draft.time;
     item.title = draft.title;
     item.location = draft.location;
+    item.notes = draft.notes;
     item.category = draft.category;
     item.currency = draft.currency;
     item.plannedUsd = draft.plannedUsd;
@@ -1305,6 +2422,7 @@ function addActivity(event) {
     state.activities.push(draft);
   }
   saveState();
+  uiState.itineraryFormPlacement = null;
   resetActivityForm();
   render();
 }
@@ -1313,6 +2431,7 @@ function addDashboardQuickActivity(event) {
   event.preventDefault();
   const inputs = el.dashboardQuickActivityInputs;
   const mode = inputs.mode.value;
+  const targetDate = inputs.date.value;
 
   if (mode === "edit") {
     const source = inputs.editSource.value;
@@ -1326,6 +2445,7 @@ function addDashboardQuickActivity(event) {
       item.time = inputs.time.value;
       item.title = inputs.title.value.trim() || item.title;
       item.location = inputs.location.value.trim();
+      item.notes = (inputs.notes?.value || "").trim();
       item.category = inputs.category.value;
       item.currency = normalizeCurrency(inputs.currency.value);
       item.plannedUsd = Math.max(0, Number(inputs.plannedUsd.value) || 0);
@@ -1343,17 +2463,25 @@ function addDashboardQuickActivity(event) {
       item.itineraryDate = inputs.date.value;
       item.itineraryTime = inputs.time.value;
       item.itineraryLocation = inputs.location.value.trim();
+      item.notes = (inputs.notes?.value || "").trim();
       item.itineraryStatus = inputs.status.value;
     } else {
       return;
+    }
+    if (targetDate) {
+      uiState.dashboardSelectedDate = targetDate;
     }
   } else {
     const item = buildActivityFromInputs(inputs);
     if (!item.title || !item.date || !item.time) return;
     state.activities.push(item);
+    if (item.date) {
+      uiState.dashboardSelectedDate = item.date;
+    }
   }
 
   saveState();
+  uiState.dashboardQuickPlacement = null;
   resetDashboardQuickForm({ preserveDate: true });
   uiState.dashboardDayModalOpen = true;
   render();
@@ -1366,6 +2494,7 @@ function addCostItem(event) {
   const draft = {
     id: makeId(),
     title: inputs.title.value.trim(),
+    notes: (inputs.notes?.value || "").trim(),
     category: inputs.category.value,
     currency: normalizeCurrency(inputs.currency.value),
     plannedUsd: Number(inputs.plannedUsd.value) || 0,
@@ -1387,6 +2516,7 @@ function addCostItem(event) {
     state.costItems.push(draft);
   }
   saveState();
+  uiState.costFormPlacement = null;
   resetCostItemForm();
   render();
 }
@@ -1418,6 +2548,35 @@ function handleTableClick(event) {
   render();
 }
 
+function handleItineraryListClick(event) {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+  const { action, id } = button.dataset;
+
+  if (handleEmptyStateAction(action)) return;
+
+  if (action === "showItineraryNewItem") {
+    showItineraryNewItemForm();
+    render();
+    requestAnimationFrame(() => el.activityInputs.title?.focus());
+    return;
+  }
+
+  if (action === "itineraryEditInline") {
+    const item = state.activities.find((a) => a.id === id);
+    if (!item) return;
+    setActivityFormEditMode(item);
+    render();
+    requestAnimationFrame(() => el.activityInputs.title?.focus());
+    return;
+  }
+
+  // Reuse existing row actions (markPaid/delete) by delegating.
+  if (action === "markPaid" || action === "delete") {
+    handleTableClick(event);
+  }
+}
+
 function handleCostItemsTableClick(event) {
   const button = event.target.closest("button[data-action]");
   if (!button) return;
@@ -1444,10 +2603,46 @@ function handleCostItemsTableClick(event) {
   render();
 }
 
+function handleCostsListClick(event) {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+  const { action, id } = button.dataset;
+
+  if (handleEmptyStateAction(action)) return;
+
+  if (action === "showCostNewItem") {
+    showCostNewItemForm();
+    render();
+    requestAnimationFrame(() => el.costItemInputs.title?.focus());
+    return;
+  }
+
+  if (action === "costEditInline") {
+    const item = (state.costItems || []).find((c) => c.id === id);
+    if (!item) return;
+    setCostItemFormEditMode(item);
+    render();
+    requestAnimationFrame(() => el.costItemInputs.title?.focus());
+    return;
+  }
+
+  if (action === "markCostItemPaid" || action === "deleteCostItem") {
+    handleCostItemsTableClick(event);
+  }
+}
+
+function handleCategoryBreakdownClick(event) {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+  handleEmptyStateAction(button.dataset.action || "");
+}
+
 function resetDemoData() {
-  state = normalizeImportedState(demoData);
-  saveState();
-  render();
+  loadSampleTrip({ dismissOnboarding: false, targetTab: "dashboard", confirmReplace: true });
+}
+
+function dismissOnboardingPanelOnly() {
+  dismissOnboarding();
 }
 
 function exportJsonBackup() {
@@ -1521,12 +2716,26 @@ async function handleGlobalSaveClick() {
   exportJsonBackup();
 }
 
-function openImportPicker() {
+function confirmBackupImportReplaceIfNeeded() {
+  if (!hasMeaningfulTripData() || isCurrentTripDemoLike()) return true;
+  return window.confirm("Importing a backup will replace current trip data. Continue?");
+}
+
+function openImportPicker({ confirmReplace = false } = {}) {
+  if (confirmReplace && !confirmBackupImportReplaceIfNeeded()) return;
   el.importJsonFile.value = "";
   el.importJsonFile.click();
 }
 
 function switchTab(tabName) {
+  if (tabName === "itinerary") {
+    hideItineraryInlineForm();
+    resetActivityForm();
+  }
+  if (tabName === "costs") {
+    hideCostInlineForm();
+    resetCostItemForm();
+  }
   el.tabButtons.forEach((button) => {
     const isActive = button.dataset.tabTarget === tabName;
     button.classList.toggle("active", isActive);
@@ -1567,16 +2776,42 @@ function closeDashboardDayModal() {
 function syncImportReminderModal() {
   if (!el.importReminderModal) return;
   el.importReminderModal.hidden = !uiState.importReminderOpen;
+  syncBodyScrollLock();
 }
 
 function openImportReminder() {
   uiState.importReminderOpen = true;
   syncImportReminderModal();
+  renderSupportUi();
+  requestAnimationFrame(() => focusModalPrimaryAction(el.importReminderModal));
 }
 
 function closeImportReminder() {
   uiState.importReminderOpen = false;
   syncImportReminderModal();
+  renderSupportUi();
+}
+
+function syncBodyScrollLock() {
+  const hasOpenModal = Boolean(uiState.dashboardDayModalOpen || uiState.importReminderOpen || uiState.aboutModalOpen);
+  const body = document.body;
+  if (!body) return;
+
+  if (hasOpenModal) {
+    if (!body.classList.contains("modal-open")) {
+      bodyScrollLockY = window.scrollY || window.pageYOffset || 0;
+      body.style.top = `-${bodyScrollLockY}px`;
+      body.classList.add("modal-open");
+    }
+    return;
+  }
+
+  if (body.classList.contains("modal-open")) {
+    body.classList.remove("modal-open");
+    const y = Number.parseInt((body.style.top || "0").replace("px", ""), 10);
+    body.style.top = "";
+    window.scrollTo(0, Number.isFinite(y) ? Math.abs(y) : bodyScrollLockY);
+  }
 }
 
 function showImportReminderOnLoad() {
@@ -1600,6 +2835,17 @@ function handleDashboardDayModalClick(event) {
   }
 
   const editBtn = event.target.closest("button[data-action='editDashboardItem']");
+  const addBtn = event.target.closest("button[data-action='showDashboardNewItem']");
+  if (addBtn) {
+    showDashboardQuickNewItemForm();
+    uiState.dashboardDayModalOpen = true;
+    render();
+    const target = el.dashboardQuickActivityInputs.title;
+    if (target) {
+      requestAnimationFrame(() => target.focus());
+    }
+    return;
+  }
   if (editBtn) {
     const { source, id } = editBtn.dataset;
     if (source === "activity") {
@@ -1622,13 +2868,22 @@ function handleDashboardDayModalClick(event) {
     }
     uiState.dashboardDayModalOpen = true;
     render();
+    const target = el.dashboardQuickActivityInputs.title;
+    if (target) {
+      requestAnimationFrame(() => target.focus());
+    }
   }
 }
 
 function handleGlobalKeydown(event) {
+  if (trapFocusInModal(event)) return;
   if (event.key !== "Escape") return;
   if (uiState.importReminderOpen) {
     closeImportReminder();
+    return;
+  }
+  if (uiState.aboutModalOpen) {
+    closeAboutModal();
     return;
   }
   if (uiState.dashboardDayModalOpen) {
@@ -1638,14 +2893,20 @@ function handleGlobalKeydown(event) {
 
 function cancelDashboardQuickEdit() {
   resetDashboardQuickForm({ preserveDate: true });
+  hideDashboardQuickInlineForm();
+  render();
 }
 
 function cancelActivityEdit() {
   resetActivityForm();
+  hideItineraryInlineForm();
+  render();
 }
 
 function cancelCostItemEdit() {
   resetCostItemForm();
+  hideCostInlineForm();
+  render();
 }
 
 async function importJsonBackup(event) {
@@ -1656,6 +2917,10 @@ async function importJsonBackup(event) {
     const text = await file.text();
     const parsed = JSON.parse(text);
     const incoming = parsed?.data ? parsed.data : parsed;
+    if (!confirmBackupImportReplaceIfNeeded()) {
+      event.target.value = "";
+      return;
+    }
     state = normalizeImportedState(incoming);
     const nowIso = new Date().toISOString();
     const meta = backupMeta();
@@ -1666,10 +2931,12 @@ async function importJsonBackup(event) {
     saveState(false);
     closeImportReminder();
     render();
-    alert("Backup imported successfully.");
+    showToast("Backup imported.");
   } catch (error) {
     console.error(error);
     alert("Could not import that JSON backup. Please choose a valid tracker backup file.");
+  } finally {
+    if (event?.target) event.target.value = "";
   }
 }
 
@@ -1687,6 +2954,16 @@ Object.values(el.settings).forEach((input) => {
   input.addEventListener("change", updateSettingsFromInputs);
 });
 
+[el.familyAdults, el.familyChildren].forEach((input) => {
+  input?.addEventListener("input", handleFamilyPrefsChange);
+  input?.addEventListener("change", handleFamilyPrefsChange);
+});
+el.familySplitToggle?.addEventListener("change", handleFamilyPrefsChange);
+[el.settingsAdults, el.settingsChildren].forEach((input) => {
+  input?.addEventListener("input", handleSettingsFamilyPrefsChange);
+  input?.addEventListener("change", handleSettingsFamilyPrefsChange);
+});
+
 getCategorySelects().forEach((select) => {
   select.dataset.lastValue = select.value;
   select.addEventListener("change", handleCategorySelectChange);
@@ -1697,28 +2974,52 @@ el.activityFormCancelEdit.addEventListener("click", cancelActivityEdit);
 el.costItemForm.addEventListener("submit", addCostItem);
 el.costItemFormCancelEdit.addEventListener("click", cancelCostItemEdit);
 el.activitiesTableBody.addEventListener("click", handleTableClick);
+el.itineraryList?.addEventListener("click", handleItineraryListClick);
+el.itineraryComposer?.addEventListener("click", handleItineraryListClick);
 el.costItemsTableBody.addEventListener("click", handleCostItemsTableClick);
+el.costsList?.addEventListener("click", handleCostsListClick);
+el.costsComposer?.addEventListener("click", handleCostsListClick);
+el.categoryBreakdown?.addEventListener("click", handleCategoryBreakdownClick);
 el.dashboardItinerary.addEventListener("click", handleDashboardTimelineClick);
 el.dashboardItinerary.addEventListener("keydown", handleDashboardTimelineKeydown);
 el.dashboardDayDetail.addEventListener("click", handleDashboardDayModalClick);
 el.printReportBtn.addEventListener("click", () => window.print());
 el.resetDemoBtn.addEventListener("click", resetDemoData);
+el.startPlanningBtn?.addEventListener("click", () => openImportPicker({ confirmReplace: true }));
+el.loadSampleTripBtn?.addEventListener("click", loadSampleTripFromOnboarding);
+el.startEmptyTripBtn?.addEventListener("click", startEmptyTripFromOnboarding);
+el.onboardingImportBackupBtn?.addEventListener("click", () => openImportPicker({ confirmReplace: false }));
+el.dismissOnboardingBtn?.addEventListener("click", dismissOnboardingPanelOnly);
+el.aboutAppBtn?.addEventListener("click", openAboutModal);
+el.footerAboutBtn?.addEventListener("click", openAboutModal);
 el.exportJsonBtn.addEventListener("click", exportJsonBackup);
-el.importJsonBtn.addEventListener("click", openImportPicker);
+el.importJsonBtn.addEventListener("click", () => openImportPicker({ confirmReplace: false }));
 el.importJsonFile.addEventListener("change", importJsonBackup);
 el.globalSaveBtn?.addEventListener("click", handleGlobalSaveClick);
 el.importReminderModal?.addEventListener("click", handleImportReminderModalClick);
 el.importReminderImportBtn?.addEventListener("click", () => {
   closeImportReminder();
-  openImportPicker();
+  openImportPicker({ confirmReplace: false });
 });
-el.importReminderDismissBtn?.addEventListener("click", closeImportReminder);
+el.importReminderDismissBtn?.addEventListener("click", () => {
+  closeImportReminder();
+  startPlanningFromHero();
+});
+el.aboutModal?.addEventListener("click", handleAboutModalClick);
+el.aboutModalClose?.addEventListener("click", closeAboutModal);
+el.supportBannerDismissBtn?.addEventListener("click", () => dismissSupportBanner({ permanent: true }));
+el.supportBannerCoffeeLink?.addEventListener("click", () => dismissSupportBanner({ permanent: true }));
 el.dashboardQuickActivityForm.addEventListener("submit", addDashboardQuickActivity);
 el.dashboardQuickFormCancelEdit.addEventListener("click", cancelDashboardQuickEdit);
 document.addEventListener("keydown", handleGlobalKeydown);
+el.activityFormModeButtons.basic?.addEventListener("click", () => setItineraryFormUiMode("basic"));
+el.activityFormModeButtons.advanced?.addEventListener("click", () => setItineraryFormUiMode("advanced"));
+el.costItemFormModeButtons.basic?.addEventListener("click", () => setCostFormUiMode("basic"));
+el.costItemFormModeButtons.advanced?.addEventListener("click", () => setCostFormUiMode("advanced"));
 el.tabButtons.forEach((button) => {
   button.addEventListener("click", () => switchTab(button.dataset.tabTarget));
 });
 
+uiState.appReady = true;
 render();
 showImportReminderOnLoad();
