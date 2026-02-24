@@ -158,11 +158,11 @@
             Time
             <input type="time" id="activityTime" required />
           </label>
-          <label>
+          <label class="form-span-full">
             Activity
             <input type="text" id="activityTitle" placeholder="Everglades Airboat Tour" required />
           </label>
-          <label>
+          <label class="form-span-full">
             Location
             <input type="text" id="activityLocation" placeholder="Miami" />
           </label>
@@ -207,7 +207,7 @@
               <option value="Completed">Completed</option>
             </select>
           </label>
-          <button id="activityFormSubmit" type="submit" class="btn btn-primary add-btn">Add Activity</button>
+          <button id="activityFormSubmit" type="submit" class="btn btn-primary add-btn form-span-full">Add Activity</button>
         </form>
 
         <div id="itineraryList" class="itinerary-list no-print"></div>
@@ -252,7 +252,7 @@
             </div>
             <button id="costItemFormCancelEdit" type="button" class="icon-btn" hidden>Cancel Edit</button>
           </div>
-          <label>
+          <label class="form-span-full">
             Cost Item
             <input type="text" id="costItemTitle" placeholder="Travel Insurance" required />
           </label>
@@ -284,7 +284,7 @@
             Paid
             <input type="number" id="costItemPaidUsd" min="0" step="0.01" value="0" />
           </label>
-          <label class="checkbox-field">
+          <label class="checkbox-field form-span-full">
             Include on Itinerary
             <span class="checkbox-inline">
               <input type="checkbox" id="costItemIncludeInItinerary" />
@@ -299,7 +299,7 @@
             Itinerary Time (optional)
             <input type="time" id="costItemItineraryTime" />
           </label>
-          <label class="form-advanced-field">
+          <label class="form-span-full form-advanced-field">
             Itinerary Location (optional)
             <input type="text" id="costItemItineraryLocation" placeholder="Orlando Airport" />
           </label>
@@ -316,7 +316,7 @@
               <option value="Completed">Completed</option>
             </select>
           </label>
-          <button id="costItemFormSubmit" type="submit" class="btn btn-primary add-btn">Add Cost Item</button>
+          <button id="costItemFormSubmit" type="submit" class="btn btn-primary add-btn form-span-full">Add Cost Item</button>
         </form>
 
         <div id="costsList" class="itinerary-list no-print"></div>
@@ -505,7 +505,7 @@
         </div>
       <div class="import-reminder-actions">
         <button id="importReminderImportBtn" type="button" class="btn btn-primary">Import backup</button>
-        <button id="importReminderDismissBtn" type="button" class="btn btn-secondary control-btn">Start Planning</button>
+        <button id="importReminderDismissBtn" type="button" class="btn btn-secondary control-btn">Load Trip</button>
       </div>
     </div>
   </div>

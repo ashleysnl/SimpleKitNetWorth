@@ -649,9 +649,11 @@ body {
   max-width: 100%;
   inline-size: 100%;
   min-inline-size: 0;
+  -webkit-min-logical-width: calc(100% - 18px);
   block-size: 38px;
   font-size: 0.9rem;
   padding-right: 6px;
+  display: block;
 }
 
 .control-panel .stack-form input[type="date"]::-webkit-datetime-edit {
@@ -1337,8 +1339,10 @@ textarea {
   max-width: 100%;
   inline-size: 100%;
   min-inline-size: 0;
+  -webkit-min-logical-width: calc(100% - 18px);
   font-size: 0.9rem;
   padding-right: 6px;
+  display: block;
 }
 
 .activity-form input[type="date"]::-webkit-datetime-edit,
@@ -1670,6 +1674,10 @@ textarea {
 
 .activity-form .add-btn {
   height: 42px;
+}
+
+.activity-form .add-btn.form-span-full {
+  width: 100%;
 }
 
 .itinerary-composer {
@@ -2270,7 +2278,8 @@ td {
   }
 
   .activity-form {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .settings-date-row {
