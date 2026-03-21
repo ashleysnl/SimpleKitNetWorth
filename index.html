@@ -1,640 +1,614 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CA">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Offline travel planner, itinerary manager, and trip budget tracker. No login. Privacy-first. Static web app." />
-  <title>TravelPlanner</title>
+  <meta
+    id="metaDescription"
+    name="description"
+    content="Calculate your net worth in Canada, compare assets and liabilities, and see how savings, growth, and debt paydown can change your financial picture over time."
+  />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta id="metaThemeColor" name="theme-color" content="#0f6abf" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_CA" />
+  <meta id="metaOgTitle" property="og:title" content="Net Worth Calculator Canada | SimpleKit" />
+  <meta
+    id="metaOgDescription"
+    property="og:description"
+    content="Calculate net worth in Canada and compare assets, liabilities, savings, and debt paydown in one view."
+  />
+  <meta id="metaOgUrl" property="og:url" content="https://simplekit.app/net-worth-calculator/" />
+  <meta id="metaOgImage" property="og:image" content="https://simplekit.app/og-image.png" />
+  <meta id="metaOgSiteName" property="og:site_name" content="SimpleKit Net Worth Calculator" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta id="metaTwitterTitle" name="twitter:title" content="Net Worth Calculator Canada | SimpleKit" />
+  <meta
+    id="metaTwitterDescription"
+    name="twitter:description"
+    content="Use this Canadian net worth calculator to compare assets, debt, savings, and long-term progress."
+  />
+  <meta id="metaTwitterImage" name="twitter:image" content="https://simplekit.app/og-image.png" />
+  <title>Net Worth Calculator Canada | Assets, Debt & Progress Tracking | SimpleKit</title>
+  <link rel="canonical" href="https://simplekit.app/net-worth-calculator/" />
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml" />
+  <link rel="shortcut icon" href="icons/favicon.svg" />
+  <link rel="mask-icon" href="icons/mask-icon.svg" color="#0f6abf" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6SS26QC3C9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag("js", new Date());
+    gtag("config", "G-6SS26QC3C9");
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Net Worth Calculator Canada",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Web",
+          "inLanguage": "en-CA",
+          "areaServed": {
+            "@type": "Country",
+            "name": "Canada"
+          },
+          "url": "https://simplekit.app/net-worth-calculator/",
+          "description": "A Canadian net worth calculator for tracking assets, liabilities, savings, and debt paydown."
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is net worth?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Net worth is the value of what you own minus what you owe. It combines cash, investments, real estate, pensions, and other assets, then subtracts debts such as mortgages, loans, and credit cards."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do you calculate net worth in Canada?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "In Canada, net worth is calculated by adding assets such as cash, TFSAs, RRSPs, FHSAs, pensions, real estate, and vehicles, then subtracting liabilities such as mortgages, HELOCs, loans, and other debts."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Should you include your house in net worth?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, many people include their home because home equity is part of their balance sheet. The important step is to include both the property value and the related mortgage or HELOC."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is pension included in net worth?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A pension can be included if you use a reasonable estimate for its present value. If you do not have a clear estimate, you can leave it blank and review it later."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a good net worth by age?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "There is no single good net worth number by age because income, housing costs, pensions, family size, and when you started saving all matter. The more useful question is whether your net worth is moving in the right direction over time."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does net worth connect to retirement planning?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Net worth shows the resources you may be able to draw on later, but retirement readiness also depends on retirement income sources, spending needs, taxes, and timing decisions such as CPP or RRSP withdrawals."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="page-shell">
-    <header class="hero">
-      <div class="hero-content">
-        <p class="eyebrow">TravelPlanner • Family budget • Local-first</p>
-        <h1 id="heroTripTitle">Plan your family vacation without spreadsheets.</h1>
-        <p class="hero-subtitle">Offline • No login • Your data stays on your device</p>
-        <p class="hero-proof">Private, local-first trip planning. No cloud. No tracking.</p>
-        <div class="hero-cta-row no-print">
-          <button id="startPlanningBtn" class="btn btn-primary" type="button">Load Trip</button>
-          <a
-            class="btn btn-secondary control-btn support-link-btn"
-            href="https://buymeacoffee.com/ashleysnl"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="If this saved you from a spreadsheet"
-          >☕ Support</a>
-        </div>
-        <div class="hero-perfect-for" aria-label="Perfect for">
-          <span class="hero-perfect-label">Perfect for:</span>
-          <ul class="hero-perfect-list">
-            <li>Family vacations</li>
-            <li>Budget-conscious trips</li>
-            <li>Privacy-first travelers</li>
-            <li>Planning without internet</li>
-          </ul>
-        </div>
+    <nav class="suite-nav no-print" aria-label="SimpleKit suite navigation">
+      <a class="suite-home" href="https://simplekit.app/" target="_blank" rel="noopener noreferrer">SimpleKit</a>
+      <div class="suite-links">
+        <a href="https://simplekit.app/retirement-planner/" target="_blank" rel="noopener noreferrer">Retirement Planner</a>
+        <a href="https://simplekit.app/cpp-calculator/" target="_blank" rel="noopener noreferrer">CPP Calculator</a>
+        <a href="https://simplekit.app/rrsp-vs-tfsa-calculator/" target="_blank" rel="noopener noreferrer">TFSA / RRSP Calculator</a>
       </div>
-      <div class="hero-actions no-print">
-        <button id="printReportBtn" class="btn btn-primary">Print PDF</button>
-        <button id="resetDemoBtn" class="btn btn-secondary">Reset</button>
-        <button id="aboutAppBtn" type="button" class="btn btn-secondary control-btn">About</button>
+    </nav>
+
+    <header class="hero" aria-labelledby="heroTitle">
+      <div class="hero-content">
+        <p class="eyebrow">SimpleKit Retirement Tools • Canada</p>
+        <h1 id="heroTitle">SimpleKit Net Worth Calculator Canada</h1>
+        <p class="hero-subtitle">Calculate your net worth in Canada, understand what counts, and see what your balance sheet could look like over time.</p>
+        <p class="hero-proof">Estimate what you own and subtract what you owe. This gives you a clearer starting point for retirement planning.</p>
+        <div class="hero-cta-row no-print">
+          <button id="jumpToCalculatorBtn" class="btn btn-primary" type="button">Start the calculator</button>
+          <a class="btn btn-secondary ghost-btn" href="#educationSection">What counts as net worth?</a>
+        </div>
+        <p class="hero-trust">No sign-up. No data sent to servers. Runs entirely in your browser.</p>
+      </div>
+      <div class="hero-side">
+        <div class="hero-stat-card">
+          <span class="hero-stat-label">Formula</span>
+          <strong>Assets - Liabilities</strong>
+          <p>Track the snapshot now, then use the projection to see what regular saving and debt paydown can do over time.</p>
+        </div>
+        <div class="hero-mini-grid" aria-label="What this tool shows">
+          <article class="hero-mini-card">
+            <span class="mini-kicker">Today</span>
+            <strong>Current net worth</strong>
+          </article>
+          <article class="hero-mini-card">
+            <span class="mini-kicker">Mix</span>
+            <strong>Assets vs debts</strong>
+          </article>
+          <article class="hero-mini-card">
+            <span class="mini-kicker">Next</span>
+            <strong>Future trajectory</strong>
+          </article>
+        </div>
       </div>
     </header>
 
-    <section class="trip-snapshot" aria-labelledby="tripSnapshotTitle">
+    <section class="trip-snapshot trust-strip" aria-labelledby="trustHeading">
       <div class="trip-snapshot-head">
         <div>
-          <h2 id="tripSnapshotTitle">Trip Snapshot</h2>
-          <p class="muted small-copy">Quick totals for your trip budget and plan progress.</p>
+          <h2 id="trustHeading">Quick trust note</h2>
+          <p class="muted small-copy">Built to feel simple, private, and useful for real Canadian planning conversations.</p>
         </div>
-        <div class="offline-badge-wrap" aria-label="Offline storage status">
-          <span class="offline-badge">Works offline (even on flights)</span>
-          <span class="offline-badge-note">Your data is stored locally in your browser.</span>
-          <span class="offline-badge-trust">No data leaves your device.</span>
+        <div class="offline-badge-wrap" aria-label="Privacy note">
+          <span class="offline-badge">Private by default</span>
+          <span class="offline-badge-note">Entries stay on this device.</span>
+          <span class="offline-badge-trust">Use sample data if you just want to explore first.</span>
         </div>
       </div>
-      <div class="trip-snapshot-auto-note">
-        <span class="trip-snapshot-info" aria-hidden="true" title="Snapshot updates automatically. Data stays on this device.">i</span>
-        <span class="muted small-copy">Snapshot updates automatically. Data stays on this device.</span>
+      <div class="trip-snapshot-grid trust-grid">
+        <article class="trip-snapshot-item">
+          <span class="label">Easy start</span>
+          <span class="value">3 sections</span>
+          <span class="sub">Assets, debts, and projection assumptions.</span>
+        </article>
+        <article class="trip-snapshot-item">
+          <span class="label">Live updates</span>
+          <span class="value">Instant</span>
+          <span class="sub">Blank fields count as zero and charts refresh automatically.</span>
+        </article>
+        <article class="trip-snapshot-item">
+          <span class="label">Retirement context</span>
+          <span class="value">Built in</span>
+          <span class="sub">See how net worth fits with TFSA, RRSP, CPP, and long-term planning.</span>
+        </article>
       </div>
-      <div id="tripSnapshotGrid" class="trip-snapshot-grid" aria-live="polite"></div>
     </section>
 
-    <main class="tabbed-layout">
-      <nav class="tabs no-print" aria-label="App Sections">
-        <button type="button" class="tab-btn active" data-tab-target="dashboard">Dashboard</button>
-        <button type="button" class="tab-btn" data-tab-target="itinerary">Itinerary</button>
-        <button type="button" class="tab-btn" data-tab-target="costs">Costs</button>
-        <button type="button" class="tab-btn" data-tab-target="settings">Settings</button>
-        <button type="button" class="tab-btn" data-tab-target="report">Report</button>
-      </nav>
-
-      <section class="panel dashboard-panel tab-panel active" data-tab-panel="dashboard" aria-labelledby="dashboard-heading">
+    <main class="page-flow">
+      <section id="calculatorSection" class="panel calculator-panel" aria-labelledby="calculatorHeading">
         <div class="panel-header">
-          <h2 id="dashboard-heading">Budget Dashboard</h2>
-          <p>Forecast vs paid totals and category breakdown</p>
+          <h2 id="calculatorHeading">Net worth calculator</h2>
+          <p>Start with your balance sheet first. Use realistic resale values for homes, vehicles, and other assets.</p>
         </div>
 
-        <div class="dashboard-trip-header">
-          <h3 id="dashboardTripTitle">Trip</h3>
-          <p id="dashboardTripMeta" class="muted"></p>
+        <div class="calculator-intro prose-inline">
+          <p><strong>SimpleKit Net Worth Calculator</strong> is a plain-English net worth calculator for Canada. Use it as a household net worth calculator, a personal balance-sheet check-in, or a quick way to connect today’s numbers to longer-term retirement planning.</p>
         </div>
 
-        <section id="onboardingPanel" class="onboarding-panel no-print" hidden aria-labelledby="onboardingTitle">
-          <div>
-            <h3 id="onboardingTitle">Get started fast</h3>
-            <p class="muted">New here? Load a sample Disney-style family trip (demo) to preview itinerary + budget tracking, or start with a blank planner.</p>
+        <section class="mobile-summary-card" aria-labelledby="mobileSummaryHeading">
+          <div class="results-head">
+            <div>
+              <span class="results-kicker">Quick view</span>
+              <h3 id="mobileSummaryHeading">Live snapshot</h3>
+            </div>
+            <span id="mobileStrengthBadge" class="strength-badge">Building</span>
           </div>
-          <div class="onboarding-actions">
-            <button id="loadSampleTripBtn" type="button" class="btn btn-primary">Load sample Disney-style family trip (demo)</button>
-            <button id="startEmptyTripBtn" type="button" class="btn btn-secondary control-btn">Start empty</button>
-            <button id="onboardingImportBackupBtn" type="button" class="btn btn-primary">Import backup</button>
-            <button id="dismissOnboardingBtn" type="button" class="icon-btn">Dismiss</button>
+          <div class="mobile-summary-value">
+            <span class="label">Current net worth</span>
+            <strong id="mobileNetWorthValue">$0</strong>
           </div>
+          <div id="mobileSummaryGrid" class="mobile-summary-grid" aria-live="polite"></div>
         </section>
 
-        <div class="metric-grid" id="metricGrid"></div>
-
-        <div class="breakdown-wrap">
-          <div class="subsection dashboard-category-panel">
-            <h3 id="dashboardCategoryBreakdownTitle">Category Breakdown (Forecast)</h3>
-            <div id="categoryBreakdown" class="category-list"></div>
-          </div>
-          <div class="subsection dashboard-budget-panel">
-            <h3>Budget Health</h3>
-            <div class="progress-card">
-              <div class="progress-row">
-                <span>Forecast vs Budget</span>
-                <span id="plannedBudgetPct">0%</span>
+        <div class="calculator-layout">
+          <form id="calculatorForm" class="calculator-card no-print" novalidate>
+            <div class="form-toolbar">
+              <div>
+                <strong>Guided input</strong>
+                <p class="muted small-copy">You can include pensions and home equity for a fuller financial picture.</p>
               </div>
-              <div class="progress-track">
-                <div id="plannedBudgetBar" class="progress-fill planned"></div>
-              </div>
-              <div class="progress-row">
-                <span>Paid vs Budget</span>
-                <span id="paidBudgetPct">0%</span>
-              </div>
-              <div class="progress-track">
-                <div id="paidBudgetBar" class="progress-fill paid"></div>
+              <div class="toolbar-actions">
+                <button id="loadSampleBtn" class="btn btn-primary" type="button">Load sample data</button>
+                <button id="resetBtn" class="btn btn-secondary btn-secondary-panel" type="button">Reset</button>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="subsection dashboard-itinerary">
-          <div class="timeline-head">
-            <h3>Itinerary Timeline</h3>
-            <p id="dashboardTimelineRange" class="muted small-copy"></p>
-          </div>
-          <div id="dashboardItinerary" class="dashboard-timeline"></div>
+            <details class="input-card" open>
+              <summary>
+                <span>Assets</span>
+                <span class="summary-note">What you own</span>
+              </summary>
+              <div class="input-grid">
+                <label class="form-field">
+                  <span>Cash / chequing / savings</span>
+                  <input id="cash" data-format="currency" inputmode="decimal" placeholder="15,000" />
+                  <small>Emergency funds and everyday cash accounts.</small>
+                </label>
+                <label class="form-field">
+                  <span>TFSA</span>
+                  <input id="tfsa" data-format="currency" inputmode="decimal" placeholder="55,000" />
+                  <small>Use current market value.</small>
+                </label>
+                <label class="form-field">
+                  <span>RRSP</span>
+                  <input id="rrsp" data-format="currency" inputmode="decimal" placeholder="180,000" />
+                  <small>Include locked-in or spousal RRSPs if relevant.</small>
+                </label>
+                <label class="form-field">
+                  <span>FHSA</span>
+                  <input id="fhsa" data-format="currency" inputmode="decimal" placeholder="12,000" />
+                  <small>Optional if you have one.</small>
+                </label>
+                <label class="form-field">
+                  <span>Non-registered investments</span>
+                  <input id="nonRegistered" data-format="currency" inputmode="decimal" placeholder="10,000" />
+                  <small>Taxable brokerage or other investment accounts.</small>
+                </label>
+                <label class="form-field">
+                  <span>Pension value estimate</span>
+                  <input id="pension" data-format="currency" inputmode="decimal" placeholder="150,000" />
+                  <small>Optional estimate if your plan provides a commuted value or statement.</small>
+                </label>
+                <label class="form-field">
+                  <span>Home value</span>
+                  <input id="homeValue" data-format="currency" inputmode="decimal" placeholder="850,000" />
+                  <small>Use a realistic current market estimate.</small>
+                </label>
+                <label class="form-field">
+                  <span>Other real estate</span>
+                  <input id="otherRealEstate" data-format="currency" inputmode="decimal" placeholder="0" />
+                  <small>Cottage, rental, land, or other property.</small>
+                </label>
+                <label class="form-field">
+                  <span>Vehicle value</span>
+                  <input id="vehicle" data-format="currency" inputmode="decimal" placeholder="25,000" />
+                  <small>Use a resale estimate, not the purchase price.</small>
+                </label>
+                <label class="form-field">
+                  <span>Business value</span>
+                  <input id="business" data-format="currency" inputmode="decimal" placeholder="0" />
+                  <small>Optional for business owners.</small>
+                </label>
+                <label class="form-field">
+                  <span>Other assets</span>
+                  <input id="otherAssets" data-format="currency" inputmode="decimal" placeholder="5,000" />
+                  <small>Collectibles, receivables, or anything else you want to include.</small>
+                </label>
+              </div>
+            </details>
+
+            <details class="input-card" open>
+              <summary>
+                <span>Liabilities</span>
+                <span class="summary-note">What you owe</span>
+              </summary>
+              <div class="input-grid">
+                <label class="form-field">
+                  <span>Mortgage balance</span>
+                  <input id="mortgage" data-format="currency" inputmode="decimal" placeholder="520,000" />
+                  <small>Outstanding principal balance.</small>
+                </label>
+                <label class="form-field">
+                  <span>HELOC</span>
+                  <input id="heloc" data-format="currency" inputmode="decimal" placeholder="0" />
+                  <small>Shown separately and included in debt totals.</small>
+                </label>
+                <label class="form-field">
+                  <span>Car loan</span>
+                  <input id="carLoan" data-format="currency" inputmode="decimal" placeholder="12,000" />
+                  <small>Auto loan or lease buyout debt.</small>
+                </label>
+                <label class="form-field">
+                  <span>Student loan</span>
+                  <input id="studentLoan" data-format="currency" inputmode="decimal" placeholder="0" />
+                  <small>Federal, provincial, or private student debt.</small>
+                </label>
+                <label class="form-field">
+                  <span>Credit card debt</span>
+                  <input id="creditCard" data-format="currency" inputmode="decimal" placeholder="2,500" />
+                  <small>Include balances you carry month to month.</small>
+                </label>
+                <label class="form-field">
+                  <span>Line of credit</span>
+                  <input id="lineOfCredit" data-format="currency" inputmode="decimal" placeholder="8,000" />
+                  <small>Personal or unsecured line of credit.</small>
+                </label>
+                <label class="form-field">
+                  <span>Other debt</span>
+                  <input id="otherDebt" data-format="currency" inputmode="decimal" placeholder="0" />
+                  <small>Anything else that should reduce your net worth.</small>
+                </label>
+              </div>
+            </details>
+
+            <details class="input-card" open>
+              <summary>
+                <span>Future projection</span>
+                <span class="summary-note">Optional estimate</span>
+              </summary>
+              <div class="input-grid projection-grid">
+                <label class="form-field">
+                  <span>Annual contributions / savings</span>
+                  <input id="annualContributions" data-format="currency" inputmode="decimal" placeholder="18,000" />
+                  <small>Added to assets each year.</small>
+                </label>
+                <label class="form-field">
+                  <span>Expected annual growth rate</span>
+                  <input id="growthRate" data-format="percent" inputmode="decimal" placeholder="5" />
+                  <small>Default is 5%. Use a conservative long-term estimate.</small>
+                </label>
+                <label class="form-field">
+                  <span>Projection years</span>
+                  <input id="projectionYears" data-format="number" inputmode="numeric" placeholder="10" />
+                  <small>Choose how far ahead you want to look.</small>
+                </label>
+                <label class="form-field">
+                  <span>Annual debt paydown</span>
+                  <input id="annualDebtPaydown" data-format="currency" inputmode="decimal" placeholder="12,000" />
+                  <small>Debt is reduced each year, but never below zero.</small>
+                </label>
+              </div>
+            </details>
+          </form>
+
+          <aside class="results-card" aria-labelledby="resultsHeading">
+            <div class="results-head">
+              <div>
+                <span class="results-kicker">Live results</span>
+                <h2 id="resultsHeading">Your current snapshot</h2>
+              </div>
+              <span id="strengthBadge" class="strength-badge" aria-live="polite">Building</span>
+            </div>
+
+            <article class="net-worth-card">
+              <span class="label">Current net worth</span>
+              <strong id="netWorthValue" class="net-worth-value">$0</strong>
+              <p id="badgeExplanation" class="muted">Based on whether assets currently exceed liabilities and how heavily debt supports those assets.</p>
+            </article>
+
+            <div id="summaryGrid" class="metric-grid" aria-live="polite"></div>
+
+            <section class="subsection insight-block" aria-labelledby="insightHeading">
+              <div class="section-head">
+                <h3 id="insightHeading">What this suggests</h3>
+                <p class="muted small-copy">Quick context, not a judgment.</p>
+              </div>
+              <p id="insightCopy" class="lead-copy"></p>
+              <ul id="insightList" class="insight-list"></ul>
+            </section>
+
+            <section class="subsection next-step-cta" aria-labelledby="nextActionHeading">
+              <div class="section-head">
+                <h3 id="nextActionHeading">Best next step</h3>
+                <p class="muted small-copy">Continue from this snapshot.</p>
+              </div>
+              <p id="nextActionCopy" class="lead-copy"></p>
+              <p id="nextActionBridge" class="muted small-copy"></p>
+              <div class="next-action-buttons">
+                <a id="primaryNextAction" class="btn btn-primary result-link-cta" href="https://simplekit.app/retirement-planner/" target="_blank" rel="noopener noreferrer" data-tool-name="retirement-planner">Open the Retirement Planner</a>
+                <a id="secondaryNextAction" class="btn btn-secondary btn-secondary-panel result-link-cta" href="https://simplekit.app/rrsp-vs-tfsa-calculator/" target="_blank" rel="noopener noreferrer" data-tool-name="tfsa-rrsp">Compare TFSA vs RRSP</a>
+              </div>
+            </section>
+          </aside>
         </div>
       </section>
 
-      <section class="panel activities-panel tab-panel" data-tab-panel="itinerary" aria-labelledby="timeline-heading" hidden>
+      <section class="panel charts-panel" aria-labelledby="chartsHeading">
         <div class="panel-header">
-          <h2 id="timeline-heading">Itinerary Builder</h2>
-          <p>Build your trip itinerary with scheduled activities and costs</p>
+          <h2 id="chartsHeading">Charts and breakdowns</h2>
+          <p>Keep the visuals simple: what you own, what you owe, and where your trajectory may be headed.</p>
         </div>
 
-        <div id="itineraryComposer" class="itinerary-composer no-print"></div>
-
-        <form id="activityForm" class="activity-form no-print" hidden>
-          <input type="hidden" id="activityFormMode" value="add" />
-          <input type="hidden" id="activityEditId" />
-          <div class="dashboard-quick-form-header">
-            <strong id="activityFormTitle">Add Itinerary Item</strong>
-            <div class="form-mode-toggle" role="group" aria-label="Itinerary form mode">
-              <button id="activityFormBasicBtn" type="button" class="mode-btn" aria-pressed="true">Basic</button>
-              <button id="activityFormAdvancedBtn" type="button" class="mode-btn" aria-pressed="false">Advanced</button>
+        <div class="charts-grid">
+          <article class="subsection chart-card">
+            <div class="section-head">
+              <h3>Asset mix</h3>
+              <p class="muted small-copy">Largest categories first.</p>
             </div>
-            <button id="activityFormCancelEdit" type="button" class="icon-btn" hidden>Cancel Edit</button>
-          </div>
-          <label>
-            Date
-            <input type="date" id="activityDate" required />
-          </label>
-          <label>
-            Time
-            <input type="time" id="activityTime" required />
-          </label>
-          <label class="form-span-full">
-            Activity
-            <input type="text" id="activityTitle" placeholder="Everglades Airboat Tour" required />
-          </label>
-          <label class="form-span-full">
-            Location
-            <input type="text" id="activityLocation" placeholder="Miami" />
-          </label>
-          <label class="form-span-full form-advanced-field">
-            Notes
-            <textarea id="activityNotes" rows="2" placeholder="Confirmation numbers, packing reminders, booking details..."></textarea>
-          </label>
-          <label>
-            Category
-            <select id="activityCategory">
-              <option value="Lodging">Lodging</option>
-              <option value="Transportation">Transportation</option>
-              <option value="Food">Food</option>
-              <option value="Activities">Activities</option>
-              <option value="Park Passes">Park Passes</option>
-              <option value="Shopping">Shopping</option>
-              <option value="Misc">Misc</option>
-              <option value="__add__">Add Category...</option>
-            </select>
-          </label>
-          <label class="form-advanced-field">
-            Currency
-            <select id="activityCurrency">
-              <option value="USD">USD</option>
-              <option value="CAD">CAD</option>
-            </select>
-          </label>
-          <label>
-            Forecast
-            <input type="number" id="activityPlannedUsd" min="0" step="0.01" required />
-          </label>
-          <label class="form-advanced-field">
-            Paid
-            <input type="number" id="activityPaidUsd" min="0" step="0.01" value="0" />
-          </label>
-          <label class="form-advanced-field">
-            Status
-            <select id="activityStatus">
-              <option value="Planned">Planned</option>
-              <option value="Booked">Booked</option>
-              <option value="Paid">Paid</option>
-              <option value="Completed">Completed</option>
-            </select>
-          </label>
-          <button id="activityFormSubmit" type="submit" class="btn btn-primary add-btn form-span-full">Add Activity</button>
-        </form>
+            <div id="assetMixChart" class="chart-shell" aria-label="Asset mix chart"></div>
+          </article>
 
-        <div id="itineraryList" class="itinerary-list no-print"></div>
-
-        <div class="table-wrap itinerary-table-legacy" hidden>
-          <table id="activitiesTable">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Activity</th>
-                <th>Location</th>
-                <th>Category</th>
-                <th>Curr</th>
-                <th>Forecast</th>
-                <th>Paid</th>
-                <th>Status</th>
-                <th class="no-print">Actions</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <article class="subsection chart-card">
+            <div class="section-head">
+              <h3>Assets vs liabilities</h3>
+              <p class="muted small-copy">Quick balance sheet comparison.</p>
+            </div>
+            <div id="balanceChart" class="chart-shell" aria-label="Assets vs liabilities chart"></div>
+          </article>
         </div>
       </section>
 
-      <section class="panel costs-panel tab-panel" data-tab-panel="costs" aria-labelledby="cost-items-heading" hidden>
+      <section class="panel projection-panel" aria-labelledby="projectionHeading">
         <div class="panel-header">
-          <h2 id="cost-items-heading">Additional Cost Items</h2>
-          <p>Add cost line items and optionally include them on the itinerary</p>
+          <h2 id="projectionHeading">Future net worth projection</h2>
+          <p>Projection assumptions are simple by design: growth on assets, yearly contributions, and annual debt paydown.</p>
         </div>
 
-        <div id="costsComposer" class="itinerary-composer no-print"></div>
-
-        <form id="costItemForm" class="activity-form no-print" hidden>
-          <input type="hidden" id="costItemFormMode" value="add" />
-          <input type="hidden" id="costItemEditId" />
-          <div class="dashboard-quick-form-header">
-            <strong id="costItemFormTitle">Add Cost Item</strong>
-            <div class="form-mode-toggle" role="group" aria-label="Cost item form mode">
-              <button id="costItemFormBasicBtn" type="button" class="mode-btn" aria-pressed="true">Basic</button>
-              <button id="costItemFormAdvancedBtn" type="button" class="mode-btn" aria-pressed="false">Advanced</button>
+        <div class="projection-layout">
+          <article class="subsection projection-summary">
+            <div class="section-head">
+              <h3>Projected outcome</h3>
+              <p class="muted small-copy">Estimate only. Not financial advice.</p>
             </div>
-            <button id="costItemFormCancelEdit" type="button" class="icon-btn" hidden>Cancel Edit</button>
-          </div>
-          <label class="form-span-full">
-            Cost Item
-            <input type="text" id="costItemTitle" placeholder="Travel Insurance" required />
-          </label>
-          <label>
-            Category
-            <select id="costItemCategory">
-              <option value="Transportation">Transportation</option>
-              <option value="Lodging">Lodging</option>
-              <option value="Food">Food</option>
-              <option value="Activities">Activities</option>
-              <option value="Park Passes">Park Passes</option>
-              <option value="Shopping">Shopping</option>
-              <option value="Misc">Misc</option>
-              <option value="__add__">Add Category...</option>
-            </select>
-          </label>
-          <label class="form-advanced-field">
-            Currency
-            <select id="costItemCurrency">
-              <option value="USD">USD</option>
-              <option value="CAD">CAD</option>
-            </select>
-          </label>
-          <label>
-            Forecast
-            <input type="number" id="costItemPlannedUsd" min="0" step="0.01" required />
-          </label>
-          <label class="form-advanced-field">
-            Paid
-            <input type="number" id="costItemPaidUsd" min="0" step="0.01" value="0" />
-          </label>
-          <label class="checkbox-field form-span-full">
-            Include on Itinerary
-            <span class="checkbox-inline">
-              <input type="checkbox" id="costItemIncludeInItinerary" />
-              Show this cost item in itinerary timeline
-            </span>
-          </label>
-          <label class="form-advanced-field">
-            Itinerary Date (optional)
-            <input type="date" id="costItemItineraryDate" />
-          </label>
-          <label class="form-advanced-field">
-            Itinerary Time (optional)
-            <input type="time" id="costItemItineraryTime" />
-          </label>
-          <label class="form-span-full form-advanced-field">
-            Itinerary Location (optional)
-            <input type="text" id="costItemItineraryLocation" placeholder="Orlando Airport" />
-          </label>
-          <label class="form-span-full form-advanced-field">
-            Notes
-            <textarea id="costItemNotes" rows="2" placeholder="Policy details, parking instructions, reservation notes..."></textarea>
-          </label>
-          <label class="form-advanced-field">
-            Itinerary Status
-            <select id="costItemItineraryStatus">
-              <option value="Planned">Planned</option>
-              <option value="Booked">Booked</option>
-              <option value="Paid">Paid</option>
-              <option value="Completed">Completed</option>
-            </select>
-          </label>
-          <button id="costItemFormSubmit" type="submit" class="btn btn-primary add-btn form-span-full">Add Cost Item</button>
-        </form>
+            <div class="projection-highlight">
+              <span class="label">Projected net worth in <span id="projectionYearsLabel">10</span> years</span>
+              <strong id="projectedNetWorthValue">$0</strong>
+            </div>
+            <p id="projectionCopy" class="muted">Change the assumptions above to test different savings, growth, and debt-paydown paths.</p>
+            <ul id="projectionAssumptionsList" class="assumption-list"></ul>
+            <p class="muted small-copy">Educational estimate only. Property values, pension values, and future returns may differ from reality.</p>
+            <div id="milestoneGrid" class="milestone-grid" aria-live="polite"></div>
+          </article>
 
-        <div id="costsList" class="itinerary-list no-print"></div>
-
-        <div class="table-wrap itinerary-table-legacy" hidden>
-          <table id="costItemsTable">
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Category</th>
-                <th>Curr</th>
-                <th>Forecast</th>
-                <th>Paid</th>
-                <th>Itinerary</th>
-                <th class="no-print">Actions</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <article class="subsection projection-chart-card">
+            <div class="section-head">
+              <h3>Projected net worth over time</h3>
+              <p class="muted small-copy">Current year plus each projected year.</p>
+            </div>
+            <div id="projectionChart" class="chart-shell" aria-label="Projected net worth line chart"></div>
+          </article>
         </div>
       </section>
 
-      <section class="panel control-panel no-print tab-panel" data-tab-panel="settings" aria-labelledby="trip-settings-heading" hidden>
+      <section id="educationSection" class="panel content-panel" aria-labelledby="educationHeading">
         <div class="panel-header">
-          <h2 id="trip-settings-heading">Trip Settings</h2>
-          <p>Trip details and exchange rate</p>
+          <h2 id="educationHeading">What counts toward net worth?</h2>
+          <p>Keep it plain: assets are what you own, liabilities are what you owe, and your net worth is the difference.</p>
         </div>
 
-        <form id="settingsForm" class="stack-form">
-          <input type="hidden" id="travelers" value="2" />
-          <label class="form-span-full">
-            Trip Name
-            <input type="text" id="tripName" placeholder="Family Vacation" />
-          </label>
-          <div class="settings-inline-grid settings-date-row form-span-full">
-            <label class="settings-half-field">
-              Start Date
-              <input type="date" id="startDate" />
-            </label>
-            <label class="settings-half-field">
-              End Date
-              <input type="date" id="endDate" />
-            </label>
-          </div>
-          <div class="settings-mini-group form-span-full" aria-labelledby="travelersGroupTitle">
-            <div id="travelersGroupTitle" class="settings-mini-head">Travelers</div>
-            <div class="settings-inline-grid">
-              <label class="settings-half-field">
-                Adults
-                <input type="number" id="settingsAdults" min="0" step="1" value="2" />
-              </label>
-              <label class="settings-half-field">
-                Kids
-                <input type="number" id="settingsChildren" min="0" step="1" value="0" />
-              </label>
-            </div>
-          </div>
-          <div class="settings-inline-grid settings-budget-row form-span-full">
-            <label class="settings-budget-field">
-              <span id="totalBudgetLabelText">Total Budget</span>
-              <input type="number" id="totalBudgetCad" min="0" step="0.01" />
-            </label>
-            <label class="settings-display-field">
-              Display Currency
-              <select id="displayCurrency">
-                <option value="USD">USD</option>
-                <option value="CAD">CAD</option>
-                <option value="EUR">EUR</option>
-              </select>
-            </label>
-          </div>
-          <details class="settings-currency-details form-span-full">
-            <summary>Currency exchange rates (edit)</summary>
-            <div class="settings-currency-grid">
-              <label>
-                USD → CAD exchange rate
-                <input type="number" id="usdToCadRate" min="0" step="0.0001" />
-              </label>
-              <label>
-                EUR → CAD exchange rate
-                <input type="number" id="eurToCadRate" min="0" step="0.0001" />
-              </label>
-            </div>
-            <p class="muted small-copy">Used only for on-device conversions. Nothing is uploaded.</p>
-          </details>
-        </form>
+        <div class="content-grid">
+          <article class="subsection prose-card">
+            <h3>Assets</h3>
+            <p>Assets include cash, investments, pensions, real estate, vehicles, business value, and anything else with meaningful resale or financial value.</p>
+            <h3>Liabilities</h3>
+            <p>Liabilities include mortgages, HELOCs, lines of credit, student loans, car loans, credit cards, and other debts that reduce your balance sheet.</p>
+            <h3>Why home equity matters</h3>
+            <p>Your home can be one of your biggest assets. Equity is what is left after subtracting the mortgage and any related borrowing such as a HELOC.</p>
+          </article>
 
-        <div class="subsection no-print backup-tools">
-          <h3>Backup</h3>
-          <div class="backup-actions">
-            <button id="exportJsonBtn" type="button" class="btn btn-primary">Export JSON Backup</button>
-            <button id="importJsonBtn" type="button" class="btn btn-secondary control-btn">Import JSON Backup</button>
-            <input id="importJsonFile" type="file" accept="application/json,.json" hidden />
-          </div>
-          <div class="backup-status">
-            <p id="backupLastUsed" class="muted small-copy">No backup imported yet on this device.</p>
-            <p id="backupDirtyStatus" class="muted small-copy"></p>
-          </div>
-          <p class="muted small-copy">Use this before clearing browser data.</p>
+          <article class="subsection prose-card">
+            <div class="formula-box" aria-label="Net worth formula">
+              <span class="formula-label">Formula</span>
+              <strong>Net Worth = Total Assets - Total Liabilities</strong>
+            </div>
+            <h3>Pensions can be estimated</h3>
+            <p>Defined benefit pensions are not always easy to value, so an estimate is acceptable. If you have a statement with a commuted value or transfer value, that can help.</p>
+            <h3>Vehicles can count, but be realistic</h3>
+            <p>Cars can be included, but they are depreciating assets. Use realistic resale values instead of what you paid.</p>
+            <h3>Common mistakes</h3>
+            <ul class="plain-list">
+              <li>Forgetting debts that still reduce your balance sheet.</li>
+              <li>Double counting the same money across multiple accounts.</li>
+              <li>Ignoring home equity by listing property value without the mortgage.</li>
+              <li>Overstating resale values for homes, vehicles, or collectibles.</li>
+              <li>Leaving out employer pensions that materially affect your full picture.</li>
+            </ul>
+          </article>
         </div>
       </section>
 
-      <section class="panel report-panel tab-panel" data-tab-panel="report" aria-labelledby="report-heading" hidden>
+      <section class="panel content-panel" aria-labelledby="seoHeading">
         <div class="panel-header">
-          <h2 id="report-heading">Printable Report</h2>
-          <p>Designed for print / PDF sharing</p>
+          <h2 id="seoHeading">Net worth questions Canadians often ask</h2>
+          <p>Readable answers first, without turning the page into finance jargon.</p>
         </div>
 
-        <div id="reportContent" class="report-content">
-          <div class="report-top">
-            <div>
-              <p class="report-kicker">Trip Summary</p>
-              <h3 id="reportTripName">Vacation</h3>
-              <p id="reportTripMeta"></p>
-            </div>
-            <div class="report-note">
-              <p><strong>Exchange Rate:</strong> <span id="reportRate"></span></p>
-              <p><strong>Generated:</strong> <span id="reportGenerated"></span></p>
-            </div>
-          </div>
+        <div class="faq-grid">
+          <article class="subsection prose-card">
+            <h3>What is net worth?</h3>
+            <p>Net worth is a snapshot of your finances at a point in time. It helps you see whether your assets are growing faster than your debts and whether your household is building long-term financial strength.</p>
+            <h3>How do you calculate net worth in Canada?</h3>
+            <p>Add your cash, TFSA, RRSP, FHSA, non-registered investments, pensions, property, vehicles, and other assets. Then subtract mortgages, HELOCs, loans, credit cards, and other debts.</p>
+            <h3>Should you include your house in net worth?</h3>
+            <p>Usually yes. For many households, home equity is a large part of total net worth. The key is to include both the home value and the remaining mortgage balance.</p>
+          </article>
 
-          <div class="report-metrics" id="reportMetrics"></div>
+          <article class="subsection prose-card">
+            <h3>Is pension included in net worth?</h3>
+            <p>It can be, especially if you have a pension statement that gives you a commuted value or another estimate. If you are unsure, you can leave it out for now and add it later.</p>
+            <h3>What is a good net worth by age?</h3>
+            <p>There is no single number that fits everyone. Income, housing costs, pensions, family size, and when you started saving all matter. The more useful question is whether your net worth is moving in the right direction over time.</p>
+            <h3>How does net worth connect to retirement planning?</h3>
+            <p>Net worth shows the resources you may be able to draw on later, but retirement readiness also depends on income sources, spending needs, taxes, and timing decisions such as CPP or RRSP withdrawals.</p>
+          </article>
+        </div>
+      </section>
 
-          <div class="report-section">
-            <h4>Family Cost Summary</h4>
-            <div id="reportFamilySummary"></div>
-          </div>
+      <section class="panel next-steps-panel" aria-labelledby="nextStepsHeading">
+        <div class="panel-header">
+          <h2 id="nextStepsHeading">Ways to improve your net worth over time</h2>
+          <p>Use your results as a starting point for practical next steps, not as a scorecard.</p>
+        </div>
 
-          <div class="report-section">
-            <h4>Budget Breakdown</h4>
-            <div id="reportBreakdown"></div>
-          </div>
+        <div class="next-steps-grid">
+          <article class="subsection action-card">
+            <h3>Pay down high-interest debt</h3>
+            <p>Reducing credit card balances and costly lines of credit can improve net worth quickly and free up future cash flow.</p>
+          </article>
+          <article class="subsection action-card">
+            <h3>Increase TFSA and RRSP contributions</h3>
+            <p>Regular contributions can compound over time and strengthen the investable side of your balance sheet.</p>
+          </article>
+          <article class="subsection action-card">
+            <h3>Track net worth quarterly</h3>
+            <p>Quarterly snapshots can show progress without turning this into a daily spreadsheet habit.</p>
+          </article>
+          <article class="subsection action-card">
+            <h3>Build emergency savings</h3>
+            <p>Cash reserves can keep new debt from replacing progress when life gets expensive.</p>
+          </article>
+        </div>
 
-          <div class="report-section">
-            <h4>Activity Timeline</h4>
-            <div id="reportTimeline" class="timeline-report"></div>
-          </div>
-          <p class="report-footer-line">Private, local-first trip planning. No login. No tracking.</p>
+        <div class="tool-grid">
+          <a class="tool-card related-tool-link" href="https://simplekit.app/rrsp-vs-tfsa-calculator/" target="_blank" rel="noopener noreferrer" data-tool-name="tfsa-rrsp">
+            <span class="tool-kicker">Continue your planning</span>
+            <h3>TFSA / RRSP Calculator</h3>
+            <p>Use it to decide where your next dollar may be more effective after tax.</p>
+          </a>
+          <a class="tool-card related-tool-link" href="https://simplekit.app/cpp-calculator/" target="_blank" rel="noopener noreferrer" data-tool-name="cpp">
+            <span class="tool-kicker">Income timing</span>
+            <h3>CPP Calculator</h3>
+            <p>See how CPP timing can change retirement income and long-term tradeoffs.</p>
+          </a>
+          <a class="tool-card related-tool-link" href="https://simplekit.app/retirement-planner/" target="_blank" rel="noopener noreferrer" data-tool-name="retirement-planner">
+            <span class="tool-kicker">Bigger picture</span>
+            <h3>Retirement Planner</h3>
+            <p>Move from your balance sheet to a fuller retirement income and spending plan.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="panel support-panel no-print" aria-labelledby="supportHeading">
+        <div class="support-panel-copy">
+          <span class="pill">Free tool</span>
+          <h2 id="supportHeading">If this tool helped you, support SimpleKit.</h2>
+          <p>This calculator is free and independently built. A coffee helps fund more practical retirement tools.</p>
+        </div>
+        <div class="support-panel-actions">
+          <a id="supportLink" class="btn btn-primary" href="https://buymeacoffee.com/ashleysnl" target="_blank" rel="noopener noreferrer">☕ Buy me a coffee</a>
         </div>
       </section>
     </main>
 
-    <footer class="app-footer no-print" aria-label="TravelPlanner support and links">
-      <div class="app-footer-copy">
-        <strong>TravelPlanner</strong>
-        <span class="muted">Private, local-first trip planning. No login. No tracking.</span>
+    <footer class="app-footer no-print" aria-label="App support and links">
+      <div class="footer-branding">
+        <strong>SimpleKit Net Worth Calculator</strong>
+        <span class="muted">Simple, private, browser-based net worth tracking for Canadian households.</span>
       </div>
-      <div class="app-footer-actions">
-        <a
-          class="footer-support-link"
-          href="https://buymeacoffee.com/ashleysnl"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="If this saved you from a spreadsheet"
-        >☕ Buy me a coffee</a>
-        <button id="footerAboutBtn" type="button" class="icon-btn" aria-label="About TravelPlanner">About</button>
+      <div class="footer-actions">
+        <a href="https://simplekit.app/" target="_blank" rel="noopener noreferrer">SimpleKit home</a>
+        <a href="https://simplekit.app/retirement-planner/" target="_blank" rel="noopener noreferrer">Retirement Planner</a>
+        <a id="footerSupportLink" href="https://buymeacoffee.com/ashleysnl" target="_blank" rel="noopener noreferrer">☕ Support</a>
       </div>
     </footer>
   </div>
 
-  <div class="global-fab-row no-print" aria-label="Quick actions">
-    <a
-      id="globalSupportBtn"
-      class="global-support-btn"
-      href="https://buymeacoffee.com/ashleysnl"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Buy me a coffee"
-      title="Buy me a coffee"
-    >☕ Support</a>
-    <button id="globalSaveBtn" class="global-save-btn" type="button" aria-label="Export JSON Backup" title="Export JSON Backup">
-      Save
-    </button>
+  <div class="global-fab-row no-print" aria-label="Support">
+    <a id="floatingSupportLink" class="global-support-btn" href="https://buymeacoffee.com/ashleysnl" target="_blank" rel="noopener noreferrer">☕ Support</a>
   </div>
 
-  <div id="importReminderModal" class="dashboard-day-detail no-print" hidden>
-    <div class="dashboard-modal-backdrop" data-modal-close="import-reminder"></div>
-      <div class="dashboard-modal-card import-reminder-card" role="dialog" aria-modal="true" aria-labelledby="importReminderTitle">
-        <div class="day-detail-head">
-          <div>
-            <h4 id="importReminderTitle">Welcome to TravelPlanner</h4>
-            <p class="muted small-copy"><strong>Offline trip planning + budget tracking in one place.</strong> Build your itinerary, track forecast vs paid costs, and keep your data on this device.</p>
-            <p class="muted small-copy"><strong>Returning to an existing trip?</strong> Import your latest JSON backup now. If you're new here, you can start planning right away without importing anything.</p>
-            <p id="importReminderLastUsed" class="muted small-copy"></p>
-          </div>
-        </div>
-      <div class="import-reminder-actions">
-        <button id="importReminderImportBtn" type="button" class="btn btn-primary">Import backup</button>
-        <button id="importReminderDismissBtn" type="button" class="btn btn-secondary control-btn">Start Planning</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="aboutModal" class="dashboard-day-detail no-print" hidden>
-    <div class="dashboard-modal-backdrop" data-modal-close="about"></div>
-    <div class="dashboard-modal-card import-reminder-card about-modal-card" role="dialog" aria-modal="true" aria-labelledby="aboutModalTitle">
-      <div class="day-detail-head">
-        <div>
-          <h4 id="aboutModalTitle">About TravelPlanner</h4>
-          <p class="muted small-copy">Plan your trip, track your budget, and manage your itinerary — private, simple, and offline. No account required.</p>
-        </div>
-        <button id="aboutModalClose" type="button" class="icon-btn" aria-label="Close About">Close</button>
-      </div>
-      <div class="about-modal-content">
-        <p>TravelPlanner is a local-first trip planner that stores your data in your browser on your device. There is no login, no cloud account, and no tracking built into the app.</p>
-        <p>Built by a Dad who wanted a simple, private trip planner.</p>
-        <ul class="about-list">
-          <li>Works on desktop and mobile</li>
-          <li>Offline-friendly and printable</li>
-          <li>Budget + itinerary in one place</li>
-        </ul>
-        <div class="about-links">
-          <a href="https://buymeacoffee.com/ashleysnl" target="_blank" rel="noopener noreferrer">☕ Buy me a coffee</a>
-          <a href="https://github.com/ashleysnl" target="_blank" rel="noopener noreferrer">GitHub: @ashleysnl</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="dashboardDayDetail" class="dashboard-day-detail no-print" hidden>
-    <div class="dashboard-modal-backdrop" data-modal-close="day-detail"></div>
-    <div class="dashboard-modal-card" role="dialog" aria-modal="true" aria-labelledby="dashboardDayDetailTitle">
-      <div class="day-detail-head">
-        <div>
-          <h4 id="dashboardDayDetailTitle">Select a Day</h4>
-          <p id="dashboardDayDetailMeta" class="muted small-copy">Click a day in the timeline to view items and add a new itinerary item.</p>
-        </div>
-        <button id="dashboardDayDetailClose" type="button" class="icon-btn" aria-label="Close">Close</button>
-      </div>
-      <div id="dashboardDayDetailList" class="day-detail-list"></div>
-      <div id="dashboardDayDetailComposer" class="day-detail-composer"></div>
-      <form id="dashboardQuickActivityForm" class="dashboard-quick-form" hidden>
-        <label>
-          Date
-          <input type="date" id="dashboardQuickActivityDate" required />
-        </label>
-        <input type="hidden" id="dashboardQuickMode" value="add" />
-        <input type="hidden" id="dashboardQuickEditSource" />
-        <input type="hidden" id="dashboardQuickEditId" />
-        <div class="dashboard-quick-form-header">
-          <strong id="dashboardQuickFormTitle">Add Itinerary Item</strong>
-          <button id="dashboardQuickFormCancelEdit" type="button" class="icon-btn" hidden>Cancel Edit</button>
-        </div>
-        <label class="form-span-full">
-          Item Title
-          <input type="text" id="dashboardQuickActivityTitle" placeholder="Dinner reservation" required />
-        </label>
-        <label>
-          Time
-          <input type="time" id="dashboardQuickActivityTime" required />
-        </label>
-        <label>
-          Location
-          <input type="text" id="dashboardQuickActivityLocation" placeholder="Downtown" />
-        </label>
-        <label class="form-span-full">
-          Notes
-          <textarea id="dashboardQuickActivityNotes" rows="2" placeholder="Add details for this item..."></textarea>
-        </label>
-        <label>
-          Category
-          <select id="dashboardQuickActivityCategory">
-            <option value="Lodging">Lodging</option>
-            <option value="Transportation">Transportation</option>
-            <option value="Food">Food</option>
-            <option value="Activities">Activities</option>
-            <option value="Park Passes">Park Passes</option>
-            <option value="Shopping">Shopping</option>
-            <option value="Misc">Misc</option>
-            <option value="__add__">Add Category...</option>
-          </select>
-        </label>
-        <label>
-          Currency
-          <select id="dashboardQuickActivityCurrency">
-            <option value="USD">USD</option>
-            <option value="CAD">CAD</option>
-          </select>
-        </label>
-        <label>
-          Forecast
-          <input type="number" id="dashboardQuickActivityPlannedUsd" min="0" step="0.01" required />
-        </label>
-        <label>
-          Paid
-          <input type="number" id="dashboardQuickActivityPaidUsd" min="0" step="0.01" value="0" />
-        </label>
-        <label>
-          Status
-          <select id="dashboardQuickActivityStatus">
-            <option value="Planned">Planned</option>
-            <option value="Booked">Booked</option>
-            <option value="Paid">Paid</option>
-            <option value="Completed">Completed</option>
-          </select>
-        </label>
-        <button id="dashboardQuickFormSubmit" type="submit" class="btn btn-primary add-btn">Add to Itinerary</button>
-      </form>
-    </div>
-  </div>
-
-  <div id="supportBanner" class="support-banner no-print" hidden role="status" aria-live="polite">
-    <div class="support-banner-card">
-      <p id="supportBannerMessage">If this saved you from building a spreadsheet, consider supporting it ☕</p>
-      <div class="support-banner-actions">
-        <a
-          id="supportBannerCoffeeLink"
-          class="btn btn-primary"
-          href="https://buymeacoffee.com/ashleysnl"
-          target="_blank"
-          rel="noopener noreferrer"
-        >Buy me a coffee</a>
-        <button id="supportBannerDismissBtn" type="button" class="btn btn-secondary control-btn">Dismiss</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="appToast" class="app-toast no-print" aria-live="polite" hidden></div>
+  <div id="appToast" class="app-toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
 
   <script src="app.js"></script>
 </body>
